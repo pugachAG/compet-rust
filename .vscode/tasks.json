@@ -1,0 +1,110 @@
+{
+    "tasks": [
+        {
+            "label": "concat",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "tools/concat.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "detail": "builds single c++ source file to submit",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+                "close": true
+            }
+        },
+        {
+            "label": "cat output",
+            "type": "shell",
+            "command": "cat",
+            "args": [
+                "out/output.txt"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "none"
+        },
+        {
+            "label": "c++ build main",
+            "type": "cppbuild",
+            "command": "/usr/bin/c++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}/main.cpp",
+                "-o",
+                "${workspaceFolder}/out/app",
+                "-std=c++20"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/out"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOn": [
+                "concat"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "builds the app binary",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+                "close": true
+            }
+        },
+        {
+            "label": "c++ build current test",
+            "type": "cppbuild",
+            "command": "/usr/bin/c++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "${workspaceFolder}/testing/unit.cpp",
+                "-o",
+                "${workspaceFolder}/out/test",
+                "-std=c++20"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/out"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "builds the current test",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+                "close": true
+            }
+        },
+        {
+            "label": "gen dataclass macros",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "tools/gen_dataclass_macros.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "detail": "generates utils/dataclass.g"
+        },
+    ],
+    "version": "2.0.0"
+}

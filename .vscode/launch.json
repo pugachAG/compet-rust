@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/debug/compet-rust",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [{ "name": "LOCAL", "value": "1" }],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            //"preLaunchTask": "c++ build main",
+            //"postDebugTask": "cat output",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+    ]
+}
