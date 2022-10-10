@@ -15,7 +15,7 @@
             "environment": [{ "name": "LOCAL", "value": "1" }],
             "externalConsole": false,
             "MIMode": "lldb",
-            //"preLaunchTask": "c++ build main",
+            "preLaunchTask": "cargo build",
             //"postDebugTask": "cat output",
             "logging": {
                 "moduleLoad": false

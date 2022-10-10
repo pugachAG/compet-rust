@@ -31,31 +31,23 @@
             "group": "none"
         },
         {
-            "label": "c++ build main",
-            "type": "cppbuild",
-            "command": "/usr/bin/c++",
+            "label": "cargo build",
+            "type": "shell",
+            "command": "cargo",
             "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${workspaceFolder}/main.cpp",
-                "-o",
-                "${workspaceFolder}/out/app",
-                "-std=c++20"
+                "build",
             ],
             "options": {
-                "cwd": "${workspaceFolder}/out"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOn": [
-                "concat"
+                "$rustc"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "builds the app binary",
+            "detail": "builds the compet-rust binary",
             "presentation": {
                 "reveal": "silent",
                 "revealProblems": "onProblem",
@@ -91,19 +83,6 @@
                 "revealProblems": "onProblem",
                 "close": true
             }
-        },
-        {
-            "label": "gen dataclass macros",
-            "type": "shell",
-            "command": "python3",
-            "args": [
-                "tools/gen_dataclass_macros.py"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "build",
-            "detail": "generates utils/dataclass.g"
         },
     ],
     "version": "2.0.0"
