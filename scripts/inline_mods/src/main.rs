@@ -31,7 +31,7 @@ fn process_file(path: &Path) -> Vec<String> {
                     mod_line.insert_str(0, "    ");
                     res.push(mod_line);
                 }
-                res.push(String::from("}"));
+                res.extend_from_slice(&[String::from("}"), String::from("")]);
             }
             None => res.push(line),
         }

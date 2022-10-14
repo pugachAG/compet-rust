@@ -1,5 +1,5 @@
-pub mod io;
 pub mod solution;
+pub mod io;
 
 pub fn run() {
     let mut io = io::Io::default();
