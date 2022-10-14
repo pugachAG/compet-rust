@@ -16,7 +16,7 @@
             "externalConsole": false,
             "MIMode": "lldb",
             "preLaunchTask": "cargo build",
-            //"postDebugTask": "cat output",
+            "postDebugTask": "cat output",
             "logging": {
                 "moduleLoad": false
             }

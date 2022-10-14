@@ -1,17 +1,22 @@
 {
     "tasks": [
         {
-            "label": "concat",
+            "label": "inline mods",
             "type": "shell",
-            "command": "python3",
+            "command": "cargo",
             "args": [
-                "tools/concat.py"
+                "run",
+                "--manifest-path",
+                "scripts/inline_mods/Cargo.toml",
+                "--",
+                "src/main.rs",
+                "out/submit.rs"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "group": "build",
-            "detail": "builds single c++ source file to submit",
+            "detail": "inlines mods into single rust source file to submit",
             "presentation": {
                 "reveal": "silent",
                 "revealProblems": "onProblem",
@@ -43,41 +48,12 @@
             "problemMatcher": [
                 "$rustc"
             ],
+            "dependsOn": ["inline mods"],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "detail": "builds the compet-rust binary",
-            "presentation": {
-                "reveal": "silent",
-                "revealProblems": "onProblem",
-                "close": true
-            }
-        },
-        {
-            "label": "c++ build current test",
-            "type": "cppbuild",
-            "command": "/usr/bin/c++",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "${workspaceFolder}/testing/unit.cpp",
-                "-o",
-                "${workspaceFolder}/out/test",
-                "-std=c++20"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/out"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "detail": "builds the current test",
             "presentation": {
                 "reveal": "silent",
                 "revealProblems": "onProblem",
