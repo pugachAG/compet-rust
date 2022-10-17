@@ -1,17 +1,20 @@
-use std::fmt::Debug;
-use std::{io::BufRead, str::FromStr};
+use std::{fmt::Debug, io::BufRead, str::FromStr};
 
-use crate::utils::io::InputSource;
-
+use crate::utils::io::{InputSource, OutputTarget};
 
 #[derive(Default)]
 pub struct Io {
     pub reader: InputReader,
+    pub printer: OutputPrinter,
 }
 
 pub struct InputReader {
     source: InputSource<'static>,
     splitter: WhitespaceSplitter,
+}
+
+pub struct OutputPrinter {
+    target: OutputTarget,
 }
 
 pub trait Parsable {
@@ -30,7 +33,7 @@ where
 
 impl Default for InputReader {
     fn default() -> Self {
-        InputReader {
+        Self {
             source: InputSource::from_env(),
             splitter: WhitespaceSplitter::default(),
         }
@@ -40,6 +43,23 @@ impl Default for InputReader {
 impl InputReader {
     pub fn read<T: Parsable>(&mut self) -> T {
         self.splitter.parse_next(self.source.reader())
+    }
+}
+
+impl Default for OutputPrinter {
+    fn default() -> Self {
+        Self {
+            target: OutputTarget::from_env(),
+        }
+    }
+}
+
+impl OutputPrinter {
+    pub fn print<T: ToString>(&mut self, v: &T) {
+        self.target
+            .writer()
+            .write(v.to_string().as_bytes())
+            .unwrap();
     }
 }
 

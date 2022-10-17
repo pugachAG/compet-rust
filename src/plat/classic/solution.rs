@@ -4,5 +4,5 @@ pub const IS_MULTITEST: bool = false;
 
 pub fn solve(io: &mut Io) {
     let n = io.reader.read::<i32>();
-    println!("{}", n);
+    io.printer.print(&n);
 }
