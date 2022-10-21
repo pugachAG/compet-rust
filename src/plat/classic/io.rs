@@ -2,6 +2,65 @@ use std::{fmt::Debug, io::BufRead, str::FromStr};
 
 use crate::utils::io::{InputSource, OutputTarget};
 
+#[macro_export]
+macro_rules! read_value {
+    ($io:ident, [$type:tt; $len:expr]) => {
+        (0..$len).map(|_| $crate::read_value!($io, $type)).collect::<Vec<_>>()
+    };
+    ($io:ident, ($($type:tt),+)) => {
+        ($( $crate::read_value!($io, $type), )*)
+    };
+    ($io:ident, usize1) => {
+        $crate::read_value!($io, usize) - 1
+    };
+    ($io:ident, $type:ty) => {
+        $io.reader.read::<$type>()
+    }
+}
+
+#[macro_export]
+macro_rules! input {
+    ($io:ident => $var:ident: $type:tt) => {
+        let $var = $crate::read_value!($io, $type);
+    };
+    ($io:ident => ($($var:ident),+): $type:tt) => {
+        $( $crate::input!{ $io => $var: $type } )*
+    };
+    ($io:ident => $($vars:tt: $type:tt),+) => {
+        $( $crate::input!{ $io => $vars: $type } )*
+    }
+}
+
+#[macro_export]
+macro_rules! output {
+    ($io:ident => ;) => {
+        $io.printer.print(&'\n');
+    };
+    ($io:ident => ,) => {
+        $io.printer.print(&' ');
+    };
+    ($io:ident => $val:expr) => {
+        $io.printer.print(&$val);
+    };
+    ($io:ident => sl $val:tt $($tail:tt)*) => {
+        $io.printer.print_vec(&$val, ' ');
+        $crate::output!{ $io => $($tail)* }
+    };
+    ($io:ident => nl $val:tt $($tail:tt)*) => {
+        $io.printer.print_vec(&$val, '\n');
+        $crate::output!{ $io => $($tail)* }
+    };
+    ($io:ident => yn $val:tt $($tail:tt)*) => {
+        #[allow(unused_parens)]
+        $io.printer.print(&(if $val { "yes" } else { "no" }));
+        $crate::output!{ $io => $($tail)* }
+    };
+    ($io:ident => $head:tt $($tail:tt)*) => {
+        $crate::output!{ $io => $head }
+        $crate::output!{ $io => $($tail)* }
+    }
+}
+
 #[derive(Default)]
 pub struct Io {
     pub reader: InputReader,
@@ -60,6 +119,17 @@ impl OutputPrinter {
             .writer()
             .write(v.to_string().as_bytes())
             .unwrap();
+    }
+
+    pub fn print_vec<T: ToString>(&mut self, a: &Vec<T>, sep: char) {
+        let mut is_first = true;
+        for item in a {
+            if !is_first {
+                self.print(&sep)
+            }
+            is_first = false;
+            self.print(item)
+        }
     }
 }
 
