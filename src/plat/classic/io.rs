@@ -18,8 +18,20 @@ macro_rules! read_value {
     }
 }
 
+/// # Examples
+/// ```
+/// input! { io =>
+///     (n, m): usize,
+///     a: [[i32; m]; n]
+/// }
+/// input! { io =>
+///     (n, m): usize,
+///     edges: [(usize1, usize1); m]
+/// }
+/// ```
 #[macro_export]
 macro_rules! input {
+    ($io:ident => ) => {};
     ($io:ident => $var:ident: $type:tt) => {
         let $var = $crate::read_value!($io, $type);
     };
@@ -31,8 +43,20 @@ macro_rules! input {
     }
 }
 
+/// # Examples
+/// ```
+/// let (n, m) = (1, 2);
+/// let a = vec![1, 2, 3];
+/// let ans = false;
+/// output! { io =>
+///     n, m;
+///     sl(a);
+///     yn(ans);
+/// }
+/// ```
 #[macro_export]
 macro_rules! output {
+    ($io:ident => ) => {};
     ($io:ident => ;) => {
         $io.printer.print(&'\n');
     };
