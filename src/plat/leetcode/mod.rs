@@ -9,6 +9,6 @@ pub fn run() {
     for _ in 0..solution::TEST_COUNT {
         let res = solution::exec(&mut reader);
         printer.print(&res);
-        printer.print(&"\n");
+        printer.print(&String::from("\n"));
     }
 }

@@ -1,14 +1,14 @@
 impl Solution {
-    pub fn find_max_k(nums: Vec<i32>) -> i32 {
-        nums.len() as i32
+    pub fn hardest_worker(n: i32, logs: Vec<Vec<i32>>) -> i32 {
+        0
     }
 }
 
-use crate::{plat::leetcode::io::{InputReader, LeetcodeToString}, with_input};
+use crate::{plat::leetcode::io::{InputReader, ToLeetcodeValueNode}, with_input};
 pub const TEST_COUNT: usize = 1;
 
-pub fn exec(r: &mut InputReader) -> impl LeetcodeToString {
-    with_input!{ r => find_max_k, 1 }
+pub fn exec(r: &mut InputReader) -> impl ToLeetcodeValueNode {
+    with_input!{ r => hardest_worker, 2 }
 }
 
 struct Solution;
