@@ -34,53 +34,77 @@ impl ToString for LeetcodeValueNode {
 }
 
 fn parse_next(s: &mut &str) -> LeetcodeValueNode {
-    *s = s.trim_start();
+    trim_start(s);
     match s.chars().next().unwrap() {
-        '0'..='9' => {
-            let mut v = 0;
-            while let Some(ch) = s.chars().next() {
-                if let Some(d) = ch.to_digit(10) {
-                    v = 10 * v + d as i64;
-                    *s = &s[1..]
-                } else {
-                    break;
-                }
-            }
-            LeetcodeValueNode::Int(v)
-        }
-        '"' => {
-            let v: String = s[1..].chars().take_while(|&ch| ch != '"').collect();
-            let n = v.len();
-            if s.chars().nth(n + 1) != Some('"') {
-                panic!("Failed to find matching \"");
-            }
-            *s = &s[n + 2..];
-            LeetcodeValueNode::Str(v)
-        }
-        '[' => {
-            let mut res = Vec::new();
-            *s = &s[1..].trim_start();
-            loop {
-                if let Some(ch) = s.chars().next() {
-                    match ch {
-                        ']' => {
-                            *s = &s[1..];
-                            break;
-                        }
-                        ',' => {
-                            *s = &s[1..];
-                        }
-                        _ => {
-                            res.push(parse_next(s));
-                        }
-                    }
-                    *s = s.trim();
-                } else {
-                    panic!("Unmatched [");
-                }
-            }
-            LeetcodeValueNode::Array(res)
-        }
+        '0'..='9' => parse_next_int(s),
+        '"' => parse_next_str(s),
+        '[' => parse_next_array(s),
         other => panic!("Unexpected char {other}"),
     }
+}
+
+fn parse_next_int(s: &mut &str) -> LeetcodeValueNode {
+    let mut v = 0;
+    while let Some(ch) = s.chars().next() {
+        if let Some(d) = ch.to_digit(10) {
+            v = 10 * v + d as i64;
+            consume_next_char(s);
+        } else {
+            break;
+        }
+    }
+    LeetcodeValueNode::Int(v)
+}
+
+fn parse_next_str(s: &mut &str) -> LeetcodeValueNode {
+    let mut v = String::new();
+    consume_next_char(s);
+    loop {
+        if let Some(ch) = consume_next_char(s) {
+            if ch == '"' {
+                break;
+            } else {
+                v.push(ch);
+            }
+        } else {
+            panic!("Failed to find matching \"");
+        }
+    }
+    LeetcodeValueNode::Str(v)
+}
+
+fn parse_next_array(s: &mut &str) -> LeetcodeValueNode {
+    let mut res = Vec::new();
+    consume_next_char(s);
+    trim_start(s);
+    loop {
+        if let Some(ch) = s.chars().next() {
+            match ch {
+                ']' => {
+                    consume_next_char(s);
+                    break;
+                }
+                ',' => {
+                    consume_next_char(s);
+                }
+                _ => {
+                    res.push(parse_next(s));
+                }
+            }
+            trim_start(s);
+        } else {
+            panic!("Unmatched [");
+        }
+    }
+    LeetcodeValueNode::Array(res)
+}
+
+fn trim_start(s: &mut &str) {
+    *s = s.trim_start();
+}
+
+fn consume_next_char(s: &mut &str) -> Option<char> {
+    let res = s.chars().next();
+    *s = &s[1..];
+    res
 }
