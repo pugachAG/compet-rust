@@ -2,6 +2,7 @@
 pub enum LeetcodeValueNode {
     Int(i64),
     Str(String),
+    Bool(bool),
     Array(Vec<LeetcodeValueNode>),
 }
 
@@ -22,6 +23,7 @@ impl ToString for LeetcodeValueNode {
         match self {
             LeetcodeValueNode::Int(v) => v.to_string(),
             LeetcodeValueNode::Str(s) => s.to_string(),
+            LeetcodeValueNode::Bool(v) => v.to_string(),
             LeetcodeValueNode::Array(a) => format!(
                 "[{}]",
                 a.iter()
@@ -37,6 +39,7 @@ fn parse_next(s: &mut &str) -> LeetcodeValueNode {
     trim_start(s);
     match s.chars().next().unwrap() {
         '0'..='9' => parse_next_int(s),
+        't' | 'f' => parse_next_bool(s),
         '"' => parse_next_str(s),
         '[' => parse_next_array(s),
         other => panic!("Unexpected char {other}"),
@@ -71,6 +74,17 @@ fn parse_next_str(s: &mut &str) -> LeetcodeValueNode {
         }
     }
     LeetcodeValueNode::Str(v)
+}
+
+fn parse_next_bool(s: &mut &str) -> LeetcodeValueNode {
+    let v = if s.starts_with("true") {
+        true
+    } else if s.starts_with("false") {
+        false
+    } else {
+        panic!("Can't parse bool from {s}");
+    };
+    LeetcodeValueNode::Bool(v)
 }
 
 fn parse_next_array(s: &mut &str) -> LeetcodeValueNode {

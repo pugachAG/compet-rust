@@ -16,6 +16,9 @@ macro_rules! with_input {
     ($r:ident => $func:ident, 2) => {
         crate::plat::leetcode::solution::Solution::$func($r.read(), $r.read())
     };
+    ($r:ident => $func:ident, 3) => {
+        crate::plat::leetcode::solution::Solution::$func($r.read(), $r.read(), $r.read())
+    };
 }
 
 pub struct OutputPrinter {
@@ -90,6 +93,16 @@ impl FromLeetcodeValueNode for String {
     }
 }
 
+impl FromLeetcodeValueNode for bool {
+    fn from_leetcode_input_node(node: &LeetcodeValueNode) -> Self {
+        if let LeetcodeValueNode::Bool(v) = node {
+            *v
+        } else {
+            panic!("{:?} is not bool", node)
+        }
+    }
+}
+
 impl<T: FromLeetcodeValueNode> FromLeetcodeValueNode for Vec<T> {
     fn from_leetcode_input_node(node: &LeetcodeValueNode) -> Self {
         if let LeetcodeValueNode::Array(a) = node {
@@ -117,6 +130,12 @@ impl_to_leetcode_int!(i32, i64);
 impl ToLeetcodeValueNode for String {
     fn to_leetcode_value_node(&self) -> LeetcodeValueNode {
         LeetcodeValueNode::Str(String::from(self))
+    }
+}
+
+impl ToLeetcodeValueNode for bool {
+    fn to_leetcode_value_node(&self) -> LeetcodeValueNode {
+        LeetcodeValueNode::Bool(*self)
     }
 }
 
