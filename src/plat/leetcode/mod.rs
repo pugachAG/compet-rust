@@ -1,6 +1,7 @@
 use self::io::{InputReader, OutputPrinter};
 
 pub mod solution;
+pub mod defs;
 pub mod io;
 
 pub fn run() {

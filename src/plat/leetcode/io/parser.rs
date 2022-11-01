@@ -1,5 +1,6 @@
 #[derive(Debug)]
 pub enum LeetcodeValueNode {
+    Null,
     Int(i64),
     Str(String),
     Bool(bool),
@@ -21,6 +22,7 @@ impl LeetcodeValueNode {
 impl ToString for LeetcodeValueNode {
     fn to_string(&self) -> String {
         match self {
+            LeetcodeValueNode::Null => "null".to_string(),
             LeetcodeValueNode::Int(v) => v.to_string(),
             LeetcodeValueNode::Str(s) => s.to_string(),
             LeetcodeValueNode::Bool(v) => v.to_string(),
@@ -38,12 +40,20 @@ impl ToString for LeetcodeValueNode {
 fn parse_next(s: &mut &str) -> LeetcodeValueNode {
     trim_start(s);
     match s.chars().next().unwrap() {
+        'n' => parse_next_null(s),
         '0'..='9' => parse_next_int(s),
         't' | 'f' => parse_next_bool(s),
         '"' => parse_next_str(s),
         '[' => parse_next_array(s),
         other => panic!("Unexpected char {other}"),
     }
+}
+
+fn parse_next_null(s: &mut &str) -> LeetcodeValueNode {
+    if !consume_start(s, "null") {
+        panic!("Can't parse null from {s}");
+    };
+    LeetcodeValueNode::Null
 }
 
 fn parse_next_int(s: &mut &str) -> LeetcodeValueNode {
@@ -77,9 +87,9 @@ fn parse_next_str(s: &mut &str) -> LeetcodeValueNode {
 }
 
 fn parse_next_bool(s: &mut &str) -> LeetcodeValueNode {
-    let v = if s.starts_with("true") {
+    let v = if consume_start(s, "true") {
         true
-    } else if s.starts_with("false") {
+    } else if consume_start(s, "false") {
         false
     } else {
         panic!("Can't parse bool from {s}");
@@ -111,6 +121,13 @@ fn parse_next_array(s: &mut &str) -> LeetcodeValueNode {
         }
     }
     LeetcodeValueNode::Array(res)
+}
+
+fn consume_start(s: &mut &str, v: &str) -> bool {
+    if s.starts_with(v) {
+        *s = &s[v.len()..];
+        true
+    } else { false }
 }
 
 fn trim_start(s: &mut &str) {
