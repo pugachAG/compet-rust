@@ -9,7 +9,7 @@ use super::defs::TreeNode;
 mod parser;
 
 pub struct InputReader {
-    source: InputSource<'static>,
+    source: InputSource,
 }
 
 #[macro_export]
