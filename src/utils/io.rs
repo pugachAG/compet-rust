@@ -1,11 +1,11 @@
 use std::{
     env,
     fs::File,
-    io::{stdin, stdout, BufRead, BufReader, BufWriter, StdinLock, Stdout, Write},
+    io::{stdin, stdout, BufRead, BufReader, BufWriter, Stdin, Stdout, Write},
 };
 
-pub enum InputSource<'a> {
-    Stdin { stdin: StdinLock<'a> },
+pub enum InputSource {
+    Stdin { reader: BufReader<Stdin> },
     File { reader: BufReader<File> },
 }
 
@@ -14,7 +14,7 @@ pub enum OutputTarget {
     File { writer: BufWriter<File> },
 }
 
-impl InputSource<'_> {
+impl InputSource {
     pub fn from_env() -> Self {
         if is_local() {
             Self::from_file()
@@ -25,7 +25,7 @@ impl InputSource<'_> {
 
     pub fn from_stdin() -> Self {
         InputSource::Stdin {
-            stdin: stdin().lock(),
+            reader: BufReader::new(stdin()),
         }
     }
 
@@ -38,7 +38,7 @@ impl InputSource<'_> {
 
     pub fn reader(&mut self) -> &mut dyn BufRead {
         match self {
-            InputSource::Stdin { stdin } => stdin,
+            InputSource::Stdin { reader } => reader,
             InputSource::File { reader } => reader,
         }
     }

@@ -76,7 +76,7 @@ macro_rules! output {
     };
     ($io:ident => yn $val:tt $($tail:tt)*) => {
         #[allow(unused_parens)]
-        $io.printer.print(&(if $val { "yes" } else { "no" }));
+        $io.printer.print(&(if $val { "Yes" } else { "No" }));
         $crate::output!{ $io => $($tail)* }
     };
     ($io:ident => $head:tt $($tail:tt)*) => {
@@ -92,7 +92,7 @@ pub struct Io {
 }
 
 pub struct InputReader {
-    source: InputSource<'static>,
+    source: InputSource,
     splitter: WhitespaceSplitter,
 }
 
