@@ -155,6 +155,10 @@ impl OutputPrinter {
             self.print(item)
         }
     }
+
+    pub fn flush(&mut self) {
+        _ = self.target.writer().flush();
+    }
 }
 
 #[derive(Default)]
