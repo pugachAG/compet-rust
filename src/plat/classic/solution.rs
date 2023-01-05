@@ -1,6 +1,4 @@
-use crate::{input, output};
-
-use super::io::Io;
+use super::includes::*;
 
 pub const IS_MULTITEST: bool = false;
 
