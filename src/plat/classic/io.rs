@@ -157,7 +157,7 @@ impl OutputPrinter {
     }
 
     pub fn flush(&mut self) {
-        _ = self.target.writer().flush();
+        let _ = self.target.writer().flush();
     }
 }
 

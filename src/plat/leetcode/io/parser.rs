@@ -13,7 +13,7 @@ impl LeetcodeValueNode {
         let node = parse_next(&mut rest);
         rest = rest.trim();
         if !rest.is_empty() {
-            panic!("Unexpected {rest}");
+            panic!("Unexpected {}", rest);
         }
         node
     }
@@ -45,13 +45,13 @@ fn parse_next(s: &mut &str) -> LeetcodeValueNode {
         't' | 'f' => parse_next_bool(s),
         '"' => parse_next_str(s),
         '[' => parse_next_array(s),
-        other => panic!("Unexpected char {other}"),
+        other => panic!("Unexpected char {}", other),
     }
 }
 
 fn parse_next_null(s: &mut &str) -> LeetcodeValueNode {
     if !consume_start(s, "null") {
-        panic!("Can't parse null from {s}");
+        panic!("Can't parse null from {}", s);
     };
     LeetcodeValueNode::Null
 }
@@ -92,7 +92,7 @@ fn parse_next_bool(s: &mut &str) -> LeetcodeValueNode {
     } else if consume_start(s, "false") {
         false
     } else {
-        panic!("Can't parse bool from {s}");
+        panic!("Can't parse bool from {}", s);
     };
     LeetcodeValueNode::Bool(v)
 }

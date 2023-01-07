@@ -130,7 +130,7 @@ fn convert_to_tree_node(a: &[LeetcodeValueNode]) -> Option<Rc<RefCell<TreeNode>>
         node.left = create_tree_node(a.get(i));
         node.right = create_tree_node(a.get(i + 1));
         i += 2;
-        for child in [&node.left, &node.right] {
+        for child in [&node.left, &node.right].iter() {
             if let Some(rc) = child {
                 q.push_back(rc.clone());
             }
