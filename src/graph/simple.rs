@@ -1,4 +1,4 @@
-use crate::utils::collections::vec_vec;
+use crate::utils::collections::def_vec;
 
 pub struct SimpleGraph {
     n: usize,
@@ -9,7 +9,7 @@ impl SimpleGraph {
     pub fn new(n: usize) -> Self {
         Self {
             n,
-            edges: vec_vec(n)
+            edges: def_vec(n)
         }
     }
 

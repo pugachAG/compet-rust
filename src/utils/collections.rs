@@ -1,3 +1,3 @@
-pub fn vec_vec<T>(n: usize) -> Vec<Vec<T>> {
-    (0..n).map(|_| Vec::new()).collect()
+pub fn def_vec<T: Default>(n: usize) -> Vec<T> {
+    (0..n).map(|_| T::default()).collect()
 }
