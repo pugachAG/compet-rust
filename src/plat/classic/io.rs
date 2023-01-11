@@ -37,7 +37,7 @@ macro_rules! input {
     ($io:ident => ) => {};
     ($io:ident => $var:ident: $type:tt) => {
         #[allow(unused_mut)]
-        let mut $var = $crate::read_value!($io, $type);
+        let $var = $crate::read_value!($io, $type);
     };
     ($io:ident => ($($var:ident),+): $type:tt) => {
         $( $crate::input!{ $io => $var: $type } )*
