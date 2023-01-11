@@ -13,6 +13,9 @@ macro_rules! read_value {
     ($io:ident, usize1) => {
         $crate::read_value!($io, usize) - 1
     };
+    ($io:ident, Str) => {
+        crate::types::str::Str::from($crate::read_value!($io, String))
+    };
     ($io:ident, $type:ty) => {
         $io.reader.read::<$type>()
     }
