@@ -16,49 +16,57 @@ impl<T: Iterator> IntoVecExt for T {
     }
 }
 
-pub trait VecReversedExt {
-    fn reversed(&self) -> Self;
-}
-
-pub trait VecSortedExt {
-    fn sorted(&self) -> Self;
-}
-
-pub trait VecSortedByKeyExt {
+pub trait SliceReversedExt {
     type Item;
 
-    fn sorted_by_key<F, K>(&self, f: F) -> Self
+    fn reversed(self) -> Vec<Self::Item>;
+}
+
+pub trait SliceSortedExt {
+    type Item;
+
+    fn sorted(self) -> Vec<Self::Item>;
+}
+
+pub trait SliceSortedByKeyExt {
+    type Item;
+
+    fn sorted_by_key<F, K>(self, f: F) -> Vec<Self::Item>
     where
         F: FnMut(&Self::Item) -> K,
         K: Ord;
 }
 
-impl<T: Ord + Clone> VecSortedExt for Vec<T> {
-    fn sorted(&self) -> Self {
-        let mut res = self.to_vec();
-        res.sort();
-        res
+impl<T: Ord + Clone> SliceSortedExt for &[T] {
+    type Item = T;
+
+    fn sorted(self) -> Vec<Self::Item> {
+        let mut a = self.to_vec();
+        a.sort();
+        a
     }
 }
 
-impl<T: Clone> VecSortedByKeyExt for Vec<T> {
+impl<T: Clone> SliceSortedByKeyExt for &[T] {
     type Item = T;
 
-    fn sorted_by_key<F, K>(&self, f: F) -> Self
+    fn sorted_by_key<F, K>(self, f: F) -> Vec<Self::Item>
     where
         F: FnMut(&Self::Item) -> K,
         K: Ord,
     {
-        let mut res = self.to_vec();
-        res.sort_by_key(f);
-        res
+        let mut a = self.to_vec();
+        a.sort_by_key(f);
+        a
     }
 }
 
-impl<T: Clone> VecReversedExt for Vec<T> {
-    fn reversed(&self) -> Self {
-        let mut res = self.to_vec();
-        res.reverse();
-        res
+impl<T: Clone> SliceReversedExt for &[T] {
+    type Item = T;
+
+    fn reversed(self) -> Vec<Self::Item> {
+        let mut a = self.to_vec();
+        a.reverse();
+        a
     }
 }

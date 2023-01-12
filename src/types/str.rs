@@ -1,5 +1,5 @@
 #[derive(Default, Clone)]
-pub struct Str(Vec<u8>);
+pub struct Str(pub Vec<u8>);
 
 impl ToString for Str {
     fn to_string(&self) -> String {
