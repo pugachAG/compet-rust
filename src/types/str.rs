@@ -20,8 +20,12 @@ impl From<&str> for Str {
 }
 
 impl Str {
-    pub fn new() -> Self {
+    pub fn empty() -> Self {
         Self::default()
+    }
+
+    pub fn new(n: usize, ch: u8) -> Self {
+        Self(vec![ch; n])
     }
 
     pub fn to_std(&self) -> String {
