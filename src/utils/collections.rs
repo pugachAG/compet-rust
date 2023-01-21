@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 pub type Vec2<T> = Vec<Vec<T>>;
@@ -11,6 +11,20 @@ pub fn def_vec2<T: Default>(n: usize, m: usize) -> Vec2<T> {
     (0..n)
         .map(|_| (0..m).map(|_| T::default()).into_vec())
         .into_vec()
+}
+
+pub trait IntoVecExt {
+    type Item;
+
+    fn into_vec(self) -> Vec<Self::Item>;
+}
+
+impl<T: Iterator> IntoVecExt for T {
+    type Item = T::Item;
+
+    fn into_vec(self) -> Vec<Self::Item> {
+        self.collect::<Vec<_>>()
+    }
 }
 
 pub trait IntoSetExt {
@@ -30,17 +44,19 @@ where
     }
 }
 
-pub trait IntoVecExt {
-    type Item;
+pub trait IntoMapExt {
+    type Key;
+    type Value;
 
-    fn into_vec(self) -> Vec<Self::Item>;
+    fn into_map(self) -> HashMap<Self::Key, Self::Value>;
 }
 
-impl<T: Iterator> IntoVecExt for T {
-    type Item = T::Item;
+impl<K: Eq + Hash, V, T: Iterator<Item = (K, V)>> IntoMapExt for T {
+    type Key = K;
+    type Value = V;
 
-    fn into_vec(self) -> Vec<Self::Item> {
-        self.collect::<Vec<_>>()
+    fn into_map(self) -> HashMap<Self::Key, Self::Value> {
+        self.collect()
     }
 }
 
