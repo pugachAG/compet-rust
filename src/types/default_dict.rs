@@ -9,13 +9,13 @@ pub struct DefaultDict<K, V> {
     default_value: V,
 }
 
-impl<K> DefaultDict<K, usize> {
+impl<K: Hash + Eq> DefaultDict<K, usize> {
     pub fn counter() -> Self {
         Self::new()
     }
 }
 
-impl<K, V: Default> DefaultDict<K, V> {
+impl<K: Hash + Eq, V: Default> DefaultDict<K, V> {
     pub fn new() -> Self {
         Self {
             map: HashMap::new(),
@@ -55,7 +55,7 @@ impl<K, V> Deref for DefaultDict<K, V> {
     }
 }
 
-impl<K: Debug, V: Debug> Debug for DefaultDict<K, V> {
+impl<K: Hash + Eq + Debug, V: Debug> Debug for DefaultDict<K, V> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.map.fmt(f)
     }

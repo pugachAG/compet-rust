@@ -1,5 +1,6 @@
 pub mod solution;
 pub mod io;
+pub mod definitions;
 pub mod includes;
 
 pub fn run() {
