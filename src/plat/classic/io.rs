@@ -51,10 +51,12 @@ macro_rules! input {
 /// let (n, m) = (1, 2);
 /// let a = vec![1, 2, 3];
 /// let ans = false;
+/// let opt: Option<usize> = None;
 /// output! { io =>
 ///     n, m;
 ///     sl(a);
 ///     yn(ans);
+///     or1(opt);
 /// }
 /// ```
 #[macro_export]
@@ -68,6 +70,14 @@ macro_rules! output {
     };
     ($io:ident => $val:expr) => {
         $io.printer.print(&$val);
+    };
+    ($io:ident => or1 $opt:tt $($tail:tt)*) => {
+        if let Some(v) = $opt {
+            $io.printer.print(&v);
+        } else {
+            $io.printer.print(&-1);
+        }
+        $crate::output!{ $io => $($tail)* }
     };
     ($io:ident => sl $val:tt $($tail:tt)*) => {
         $io.printer.print_vec(&$val, ' ');
