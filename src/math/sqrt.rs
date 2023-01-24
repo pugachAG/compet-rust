@@ -82,6 +82,7 @@ mod tests {
         assert!(!is_perfect_square(101));
     }
 
+    #[track_caller]
     fn check_sqrt(v: u64) {
         let actual = isqrt(v);
         let sq = actual.checked_mul(actual).expect("overflow");
