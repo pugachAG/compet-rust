@@ -1,14 +1,14 @@
 use crate::math::sqrt::{is_perfect_square, isqrt};
 
 #[test]
-fn test_isqrt_small_numbers() {
+fn isqrt_small_numbers() {
     for v in 0..=1000000u64 {
         check_sqrt(v);
     }
 }
 
 #[test]
-fn test_isqrt_large_numbers() {
+fn isqrt_large_numbers() {
     for shift in 0..10 {
         for v in 0..=100000u64 {
             check_sqrt((u64::MAX >> shift) - v);
@@ -17,7 +17,7 @@ fn test_isqrt_large_numbers() {
 }
 
 #[test]
-fn test_isqrt_perfect_squares() {
+fn isqrt_perfect_squares() {
     const LARGE: u64 = 10u64.pow(9);
     for v in 0..=100000u64 {
         check_sqrt(v.pow(2));
@@ -26,7 +26,7 @@ fn test_isqrt_perfect_squares() {
 }
 
 #[test]
-fn test_is_prefect_square() {
+fn is_prefect_square_simple() {
     assert!(is_perfect_square(0));
     assert!(is_perfect_square(1));
     assert!(!is_perfect_square(2));

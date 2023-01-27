@@ -3,7 +3,7 @@ use crate::plat::classic::includes::IntoVecExt;
 use crate::algo::bin_search::BinSearch;
 
 #[test]
-fn test_bin_search() {
+fn bin_search_sorted_vec() {
     const MIN_VAL: i32 = 1;
     const MAX_VAL: i32 = 4;
     let a = (MIN_VAL..=MAX_VAL).flat_map(|v| vec![v; 3]).into_vec();

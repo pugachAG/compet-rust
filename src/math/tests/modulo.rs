@@ -3,12 +3,12 @@ use crate::math::modulo::Modulo;
 type Mod = Modulo<11>;
 
 #[test]
-fn test_modulo_new() {
+fn modulo_new() {
     check_modulo(Mod::new(17), 6);
 }
 
 #[test]
-fn test_modulo_add() {
+fn modulo_add() {
     let mut v = Mod::new(6);
     check_modulo(v + 7, 2);
     check_modulo(v + Mod::new(1), 7);
@@ -19,7 +19,7 @@ fn test_modulo_add() {
 }
 
 #[test]
-fn test_modulo_sub() {
+fn modulo_sub() {
     let mut v = Mod::new(6);
     check_modulo(v - 7, 10);
     check_modulo(v - Mod::new(1), 5);
@@ -30,7 +30,7 @@ fn test_modulo_sub() {
 }
 
 #[test]
-fn test_modulo_mul() {
+fn modulo_mul() {
     let mut v = Mod::new(5);
     check_modulo(v * 7, 2);
     check_modulo(v * Mod::new(2), 10);
@@ -41,7 +41,7 @@ fn test_modulo_mul() {
 }
 
 #[test]
-fn test_modulo_div() {
+fn modulo_div() {
     let mut v = Mod::new(6);
     check_modulo(v / 3, 2);
     check_modulo(v / Mod::new(2), 3);
@@ -50,14 +50,14 @@ fn test_modulo_div() {
 }
 
 #[test]
-fn test_modulo_pow() {
+fn modulo_pow() {
     let v = Mod::new(7);
     check_modulo(v.pow(2), 5);
     check_modulo(v.pow(123121424123123123), 2);
 }
 
 #[test]
-fn test_modulo_inv() {
+fn modulo_inv() {
     check_modulo(Mod::new(7).inv(), 8);
 }
 

@@ -3,7 +3,7 @@ use crate::plat::classic::includes::IntoVecExt;
 use crate::types::integer::Integer;
 
 #[test]
-fn test_calc_prime_divisors() {
+fn calc_prime_divisors_simple() {
     check_prime(1, &[]);
     check_prime(2, &[2]);
     check_prime::<u8>(8, &[2]);
@@ -12,7 +12,7 @@ fn test_calc_prime_divisors() {
 }
 
 #[test]
-fn test_calc_all_divisors() {
+fn calc_all_divisors_simple() {
     check_all(1, &[1]);
     check_all(2, &[1, 2]);
     check_all(4, &[1, 4, 2]);
