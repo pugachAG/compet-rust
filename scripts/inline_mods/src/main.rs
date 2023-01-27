@@ -25,6 +25,9 @@ fn process_file(path: &Path) -> Vec<String> {
         match MOD_DECL_RE.captures(&line) {
             Some(caps) => {
                 let mod_name = &caps[2];
+                if mod_name == "tests" || mod_name == "leetcode" {
+                    continue;
+                }
                 res.push(String::from(&caps[1]) + &format!("{mod_name} {{"));
                 let mod_path = resolve_mod_path(path, mod_name);
                 for mut mod_line in process_file(&mod_path) {
