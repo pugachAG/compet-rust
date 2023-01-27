@@ -1,7 +1,6 @@
 #![allow(unused_imports)]
 pub use super::definitions::*;
 pub use super::io::Io;
-pub use crate::types::default_dict::DefaultDict;
 pub use crate::types::str::Str;
 pub use crate::utils::collections::{
     def_vec, def_vec2, IntoMapExt, IntoSetExt, IntoVecExt, SliceMinMaxExt, SliceReversedExt,
