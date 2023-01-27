@@ -127,7 +127,9 @@ fn consume_start(s: &mut &str, v: &str) -> bool {
     if s.starts_with(v) {
         *s = &s[v.len()..];
         true
-    } else { false }
+    } else {
+        false
+    }
 }
 
 fn trim_start(s: &mut &str) {
