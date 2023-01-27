@@ -22,6 +22,9 @@ fn process_file(path: &Path) -> Vec<String> {
     let mut res = Vec::<String>::new();
     let file = File::open(path).unwrap();
     for line in BufReader::new(file).lines().map(|r| r.unwrap()) {
+        if line.trim() == "#[cfg(test)]" {
+            continue;
+        }
         match MOD_DECL_RE.captures(&line) {
             Some(caps) => {
                 let mod_name = &caps[2];
