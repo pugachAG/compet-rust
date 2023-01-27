@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
-use std::ops::{Deref, Index, IndexMut};
+use std::ops::{Deref, DerefMut, Index, IndexMut};
 
 #[derive(Clone)]
 pub struct DefaultDict<K, V> {
@@ -52,6 +52,12 @@ impl<K, V> Deref for DefaultDict<K, V> {
 
     fn deref(&self) -> &Self::Target {
         &self.map
+    }
+}
+
+impl<K, V> DerefMut for DefaultDict<K, V> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.map
     }
 }
 
