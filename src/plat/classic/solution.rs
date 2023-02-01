@@ -1,10 +1,11 @@
 use super::includes::*;
 
-pub const IS_MULTITEST: bool = false;
+exec_mode!(multitest = true);
 
 pub fn solve(io: &mut Io) {
     input! { io =>
         _n: usize
     }
-    output! { io => }
+    output! { io =>
+    }
 }

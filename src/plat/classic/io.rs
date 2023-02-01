@@ -1,6 +1,7 @@
 use std::{fmt::Debug, io::BufRead, str::FromStr};
 
 use crate::utils::io::{InputSource, OutputTarget};
+use crate::utils::sync::Pipe;
 
 #[macro_export]
 macro_rules! read_value {
@@ -98,10 +99,39 @@ macro_rules! output {
     }
 }
 
-#[derive(Default)]
 pub struct Io {
     pub reader: InputReader,
     pub printer: OutputPrinter,
+}
+
+impl Io {
+    pub fn from_env() -> Self {
+        Self::new(InputSource::from_env(), OutputTarget::from_env())
+    }
+
+    pub fn pipe() -> (Self, Self) {
+        let (pipe1, pipe2) = (Pipe::new(), Pipe::new());
+        (
+            Self::new(
+                InputSource::from_pipe(pipe1.clone()),
+                OutputTarget::from_pipe(pipe2.clone()),
+            ),
+            Self::new(
+                InputSource::from_pipe(pipe2),
+                OutputTarget::from_pipe(pipe1),
+            ),
+        )
+    }
+
+    fn new(source: InputSource, target: OutputTarget) -> Self {
+        Self {
+            reader: InputReader {
+                source,
+                splitter: WhitespaceSplitter::default(),
+            },
+            printer: OutputPrinter { target },
+        }
+    }
 }
 
 pub struct InputReader {
@@ -127,26 +157,9 @@ where
     }
 }
 
-impl Default for InputReader {
-    fn default() -> Self {
-        Self {
-            source: InputSource::from_env(),
-            splitter: WhitespaceSplitter::default(),
-        }
-    }
-}
-
 impl InputReader {
     pub fn read<T: Parsable>(&mut self) -> T {
         self.splitter.parse_next(self.source.reader())
-    }
-}
-
-impl Default for OutputPrinter {
-    fn default() -> Self {
-        Self {
-            target: OutputTarget::from_env(),
-        }
     }
 }
 
