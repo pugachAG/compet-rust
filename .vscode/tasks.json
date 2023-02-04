@@ -9,7 +9,7 @@
                 "--manifest-path",
                 "scripts/inline_mods/Cargo.toml",
                 "--",
-                "src/main.rs",
+                "src",
                 "out/submit.rs"
             ],
             "options": {

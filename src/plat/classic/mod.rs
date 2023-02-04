@@ -7,4 +7,4 @@ pub mod includes;
 pub mod io;
 pub mod runner;
 
-pub use runner::run;
+pub use self::runner::run;
