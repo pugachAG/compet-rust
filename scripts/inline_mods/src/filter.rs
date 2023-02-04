@@ -3,7 +3,7 @@ use std::fs::read_to_string;
 use std::path::Path;
 
 use crate::use_parser::parse_use;
-use crate::utils::{RustPathBuf, resolve_mod_path, RustPath};
+use crate::utils::{resolve_mod_path, RustPath, RustPathBuf};
 
 pub fn record_used_mods(src_path: &Path) -> HashSet<RustPathBuf> {
     let mut used_mods = HashSet::new();

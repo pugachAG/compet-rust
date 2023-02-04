@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use syn::visit::Visit;
 use syn::UseTree;
 
-use crate::utils::{RustPathBuf, RustPath, parent_rust_path};
+use crate::utils::{parent_rust_path, RustPath, RustPathBuf};
 
 struct UseVisitor<'a> {
     cur_mod: &'a RustPath,
@@ -11,7 +11,7 @@ struct UseVisitor<'a> {
     stack: Vec<String>,
 }
 
-impl <'a> UseVisitor<'a> {
+impl<'a> UseVisitor<'a> {
     fn record_use(&mut self, name: Option<String>) {
         let mut path = if let Some(first) = self.stack.first() {
             match first.as_str() {
