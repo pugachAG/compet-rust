@@ -42,6 +42,22 @@ impl<const MOD: u64> Add<u64> for Modulo<MOD> {
     }
 }
 
+impl<const MOD: u64> Add<usize> for Modulo<MOD> {
+    type Output = Self;
+
+    fn add(self, rhs: usize) -> Self::Output {
+        self + Self::new(rhs as u64)
+    }
+}
+
+impl<const MOD: u64> Add<i32> for Modulo<MOD> {
+    type Output = Self;
+
+    fn add(self, rhs: i32) -> Self::Output {
+        self + Self::new(rhs as u64)
+    }
+}
+
 impl<const MOD: u64, T> AddAssign<T> for Modulo<MOD>
 where
     Self: Add<T, Output = Self>,
@@ -64,6 +80,22 @@ impl<const MOD: u64> Sub<u64> for Modulo<MOD> {
 
     fn sub(self, rhs: u64) -> Self::Output {
         self - Self::new(rhs)
+    }
+}
+
+impl<const MOD: u64> Sub<usize> for Modulo<MOD> {
+    type Output = Self;
+
+    fn sub(self, rhs: usize) -> Self::Output {
+        self - Self::new(rhs as u64)
+    }
+}
+
+impl<const MOD: u64> Sub<i32> for Modulo<MOD> {
+    type Output = Self;
+
+    fn sub(self, rhs: i32) -> Self::Output {
+        self - Self::new(rhs as u64)
     }
 }
 
@@ -92,6 +124,22 @@ impl<const MOD: u64> Mul<u64> for Modulo<MOD> {
     }
 }
 
+impl<const MOD: u64> Mul<usize> for Modulo<MOD> {
+    type Output = Self;
+
+    fn mul(self, rhs: usize) -> Self::Output {
+        self * Self::new(rhs as u64)
+    }
+}
+
+impl<const MOD: u64> Mul<i32> for Modulo<MOD> {
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        self * Self::new(rhs as u64)
+    }
+}
+
 impl<const MOD: u64, T> MulAssign<T> for Modulo<MOD>
 where
     Self: Mul<T, Output = Self>,
@@ -115,6 +163,22 @@ impl<const MOD: u64> Div<u64> for Modulo<MOD> {
 
     fn div(self, rhs: u64) -> Self::Output {
         self / Self::new(rhs)
+    }
+}
+
+impl<const MOD: u64> Div<usize> for Modulo<MOD> {
+    type Output = Self;
+
+    fn div(self, rhs: usize) -> Self::Output {
+        self / Self::new(rhs as u64)
+    }
+}
+
+impl<const MOD: u64> Div<i32> for Modulo<MOD> {
+    type Output = Self;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        self / Self::new(rhs as u64)
     }
 }
 
