@@ -53,3 +53,23 @@ impl<T: Hash + Eq> Multiset<T> {
         self.map.remove(v);
     }
 }
+
+impl<T: Hash + Eq> From<Vec<T>> for Multiset<T> {
+    fn from(value: Vec<T>) -> Self {
+        let mut ret = Self::new();
+        for v in value {
+            ret.insert(v);
+        }
+        ret
+    }
+}
+
+impl<T: Hash + Eq + Clone> From<&Vec<T>> for Multiset<T> {
+    fn from(value: &Vec<T>) -> Self {
+        let mut ret = Self::new();
+        for v in value {
+            ret.insert(v.clone());
+        }
+        ret
+    }
+}

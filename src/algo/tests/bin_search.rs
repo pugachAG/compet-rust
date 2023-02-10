@@ -1,6 +1,61 @@
+use std::ops::Bound;
+use std::ops::Range;
+use std::ops::RangeBounds;
+use std::ops::RangeInclusive;
+
+use crate::algo::bin_search::bin_search_range;
 use crate::plat::classic::includes::IntoVecExt;
 
 use crate::algo::bin_search::BinSearch;
+
+#[test]
+fn bin_search_range_doc() {
+    assert_eq!(bin_search_range(&[1, 2, 2, 3], 2..3), 1..3);
+}
+
+#[test]
+fn bin_search_range_comprehensive() {
+    const MIN_VAL: i32 = 1;
+    const MAX_VAL: i32 = 4;
+    let a = (MIN_VAL..=MAX_VAL).flat_map(|v| vec![v; 3]).into_vec();
+    let n = a.len();
+    for l in 0..n {
+        for r in l..n {
+            let cur = &a[l..r];
+            for start in gen_bounds(MIN_VAL - 1..=MAX_VAL + 1) {
+                for end in gen_bounds(MIN_VAL - 1..=MAX_VAL + 1) {
+                    let range = (start, end);
+                    let actual = bin_search_range(cur, range);
+                    let expected = bin_search_range_naive(cur, range);
+                    assert_eq!(actual, expected, "bin_search_range({cur:?}, {range:?})");
+                }
+            }
+        }
+    }
+}
+
+fn gen_bounds(range: RangeInclusive<i32>) -> Vec<Bound<i32>> {
+    let mut ret = vec![Bound::Unbounded];
+    for v in range {
+        ret.push(Bound::Included(v));
+        ret.push(Bound::Excluded(v));
+    }
+    ret
+}
+
+fn bin_search_range_naive<B: RangeBounds<i32>>(a: &[i32], range: B) -> Range<usize> {
+    let n = a.len();
+    let mut ret = n..n;
+    for (i, u) in a.iter().enumerate() {
+        if range.contains(u) {
+            if ret.start == n {
+                ret.start = i;
+            }
+            ret.end = i + 1;
+        }
+    }
+    ret
+}
 
 #[test]
 fn bin_search_sorted_vec() {

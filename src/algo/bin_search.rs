@@ -1,7 +1,64 @@
 use std::cmp::Ordering;
-use std::ops::{Bound, RangeBounds};
+use std::ops::{Bound, Range, RangeBounds};
 
 use crate::types::integer::Integer;
+
+/// # Examples
+/// ```
+/// assert_eq!(bin_search_range(&[1, 2, 2, 3], 2..3), 1..3);
+/// ```
+pub fn bin_search_range<T: Ord, B: RangeBounds<T>>(a: &[T], range: B) -> Range<usize> {
+    let n = a.len();
+    if let Some(l) = bin_search_start(a, range.start_bound()) {
+        if let Some(d_r) = bin_search_end(&a[l..], range.end_bound()) {
+            return l..l + d_r + 1;
+        }
+    }
+    n..n
+}
+
+fn bin_search_end<T: Ord>(a: &[T], b: Bound<&T>) -> Option<usize> {
+    let n = a.len();
+    if matches!(b, Bound::Unbounded) && !a.is_empty() {
+        return Some(n - 1);
+    }
+    let mut bs = BinSearch::new(0..n);
+    while let Some(token) = bs.next() {
+        let cur = &a[token.val];
+        let ok = match b {
+            Bound::Included(v) => cur <= v,
+            Bound::Excluded(v) => cur < v,
+            Bound::Unbounded => unreachable!(),
+        };
+        if ok {
+            token.update_left(true);
+        } else {
+            token.update_right(false);
+        }
+    }
+    bs.answer()
+}
+
+fn bin_search_start<T: Ord>(a: &[T], b: Bound<&T>) -> Option<usize> {
+    if matches!(b, Bound::Unbounded) && !a.is_empty() {
+        return Some(0);
+    }
+    let mut bs = BinSearch::new(0..a.len());
+    while let Some(token) = bs.next() {
+        let cur = &a[token.val];
+        let ok = match b {
+            Bound::Included(v) => cur >= v,
+            Bound::Excluded(v) => cur > v,
+            Bound::Unbounded => unreachable!(),
+        };
+        if ok {
+            token.update_right(true);
+        } else {
+            token.update_left(false);
+        }
+    }
+    bs.answer()
+}
 
 #[derive(Debug)]
 struct Boundary<T: Integer> {
@@ -23,6 +80,9 @@ impl<T: Integer> Boundary<T> {
     }
 }
 
+/// # Examples
+/// ```
+/// ```
 pub struct BinSearch<T: Integer> {
     left: Boundary<T>,
     right: Boundary<T>,
@@ -50,24 +110,29 @@ impl<T: Integer> BinSearchDecisionToken<'_, T> {
 
 impl<T: Integer> BinSearch<T> {
     pub fn new(range: impl RangeBounds<T>) -> Self {
-        let val_left = match range.start_bound() {
+        let val_left_incl = match range.start_bound() {
             Bound::Included(val) => *val,
             Bound::Excluded(val) => *val + 1.into(),
             Bound::Unbounded => panic!("unbounded start is not supported"),
         };
-        let val_right = match range.end_bound() {
-            Bound::Included(val) => *val,
-            Bound::Excluded(val) => *val - 1.into(),
+        let val_right_excl = match range.end_bound() {
+            Bound::Included(val) => *val + 1.into(),
+            Bound::Excluded(val) => *val,
             Bound::Unbounded => panic!("unbounded end is not supported"),
         };
-        Self {
-            left: Boundary::unconfirmed(val_left),
-            right: Boundary::unconfirmed(val_right),
-            ans: if val_left <= val_right {
-                None
-            } else {
-                Some(None)
-            },
+        if val_left_incl >= val_right_excl {
+            Self {
+                left: Boundary::unconfirmed(val_left_incl),
+                // keep left exclusive to avoid underflow when val_right_excl == 0usize
+                right: Boundary::unconfirmed(val_right_excl),
+                ans: Some(None),
+            }
+        } else {
+            Self {
+                left: Boundary::unconfirmed(val_left_incl),
+                right: Boundary::unconfirmed(val_right_excl - 1.into()),
+                ans: None,
+            }
         }
     }
 
