@@ -2,10 +2,12 @@ use std::ops::Range;
 
 use crate::plat::classic::includes::def_vec;
 
-pub struct SegTree<T, F> {
+type CombineFn<T> = fn(&T, &T) -> T;
+
+pub struct SegTree<T> {
     n: usize,
     st: Vec<T>,
-    f: F,
+    f: CombineFn<T>,
 }
 
 struct Pos {
@@ -57,8 +59,8 @@ impl Pos {
     }
 }
 
-impl<T: Default + Clone, F: Fn(&T, &T) -> T> SegTree<T, F> {
-    pub fn new(a: &[T], f: F) -> Self {
+impl<T: Default + Clone> SegTree<T> {
+    pub fn new(a: &[T], f: CombineFn<T>) -> Self {
         let n = a.len();
         let mut ret = Self {
             n,
