@@ -1,4 +1,4 @@
-use std::ops::AddAssign;
+use std::ops::{AddAssign, Sub};
 
 use crate::utils::collections::{def_vec, IntoVecExt};
 
@@ -25,4 +25,22 @@ pub fn prefix_sum<T: AddAssign<T> + From<u8> + Copy>(a: &[T], prepend_zero: bool
         ret.push(cur);
     }
     ret
+}
+
+pub struct SliceRangeSum<T> {
+    pref: Vec<T>,
+}
+
+impl<T: AddAssign<T> + Sub<Output = T> + From<u8> + Copy> SliceRangeSum<T> {
+    pub fn new(a: &[T]) -> Self {
+        Self {
+            pref: prefix_sum(a, true),
+        }
+    }
+
+    pub fn sum(&self, l: usize, r: usize) -> T {
+        let n = self.pref.len() - 1;
+        assert!(l <= r && r < n);
+        self.pref[r + 1] - self.pref[l]
+    }
 }
