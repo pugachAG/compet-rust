@@ -58,6 +58,19 @@ fn bin_search_range_naive<B: RangeBounds<i32>>(a: &[i32], range: B) -> Range<usi
 }
 
 #[test]
+fn bin_search_doc() {
+    fn isqrt(x: u32) -> u32 {
+        let mut bs = BinSearch::prefix(0..=x);
+        while let Some(token) = bs.next() {
+            let ok = token.val().pow(2) <= x;
+            token.update(ok);
+        }
+        bs.answer().unwrap()
+    }
+    assert_eq!(isqrt(30), 5);
+}
+
+#[test]
 fn bin_search_sorted_vec() {
     const MIN_VAL: i32 = 1;
     const MAX_VAL: i32 = 4;
@@ -98,15 +111,11 @@ fn check_index(
 }
 
 fn bin_search_last_le(a: &[i32], l: usize, r: usize, v: i32) -> Option<usize> {
-    let mut bs = BinSearch::new(l..=r);
+    let mut bs = BinSearch::prefix(l..=r);
     let mut iterations = 0;
     while let Some(token) = bs.next() {
         let i = token.val();
-        if a[i] <= v {
-            token.update_left(true);
-        } else {
-            token.update_right(false);
-        }
+        token.update(a[i] <= v);
         iterations += 1;
         assert!(iterations <= 40, "too many iterations");
     }
@@ -114,15 +123,11 @@ fn bin_search_last_le(a: &[i32], l: usize, r: usize, v: i32) -> Option<usize> {
 }
 
 fn bin_search_first_gt(a: &[i32], l: usize, r: usize, v: i32) -> Option<usize> {
-    let mut bs = BinSearch::new(l..=r);
+    let mut bs = BinSearch::suffix(l..=r);
     let mut iterations = 0;
     while let Some(token) = bs.next() {
         let i = token.val();
-        if a[i] > v {
-            token.update_right(true);
-        } else {
-            token.update_left(false);
-        }
+        token.update(a[i] > v);
         iterations += 1;
         assert!(iterations <= 40, "too many iterations");
     }
