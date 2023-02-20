@@ -16,6 +16,10 @@ impl Str {
     pub fn as_str(&self) -> &str {
         std::str::from_utf8(self).unwrap()
     }
+
+    pub fn count(&self, ch: u8) -> usize {
+        self.iter().filter(|&&c| c == ch).count()
+    }
 }
 
 impl ToString for Str {

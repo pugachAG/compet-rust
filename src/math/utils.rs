@@ -2,6 +2,16 @@ use std::ops::{AddAssign, Sub};
 
 use crate::utils::collections::{def_vec, IntoVecExt};
 
+pub fn permutation_index(a: &[usize]) -> Vec<usize> {
+    let n = a.len();
+    let mut ans = vec![n; n];
+    for (i, &v) in a.iter().enumerate() {
+        assert!(v < n && ans[v] == n, "not a permutation");
+        ans[v] = i;
+    }
+    ans
+}
+
 pub fn coordinate_compress<T: Ord>(a: &[T]) -> Vec<usize> {
     let n = a.len();
     let mut indices = (0..n).into_vec();
