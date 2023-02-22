@@ -12,9 +12,12 @@ pub fn bin_search_range<T: Ord, B: RangeBounds<T>>(a: &[T], range: B) -> Range<u
     if let Some(l) = bin_search_start(a, range.start_bound()) {
         if let Some(d_r) = bin_search_end(&a[l..], range.end_bound()) {
             return l..l + d_r + 1;
+        } else {
+            l..l
         }
+    } else {
+        n..n
     }
-    n..n
 }
 
 fn bin_search_start<T: Ord>(a: &[T], b: Bound<&T>) -> Option<usize> {

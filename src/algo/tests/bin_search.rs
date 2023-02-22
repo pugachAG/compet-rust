@@ -46,11 +46,16 @@ fn gen_bounds(range: RangeInclusive<i32>) -> Vec<Bound<i32>> {
 fn bin_search_range_naive<B: RangeBounds<i32>>(a: &[i32], range: B) -> Range<usize> {
     let n = a.len();
     let mut ret = n..n;
-    for (i, u) in a.iter().enumerate() {
-        if range.contains(u) {
-            if ret.start == n {
-                ret.start = i;
-            }
+    for (i, &u) in a.iter().enumerate() {
+        let ok_start = match range.start_bound() {
+            Bound::Included(&v) => u >= v,
+            Bound::Excluded(&v) => u > v,
+            Bound::Unbounded => true,
+        };
+        if ok_start && ret.start == n {
+            ret = i..i;
+        }
+        if range.contains(&u) {
             ret.end = i + 1;
         }
     }
