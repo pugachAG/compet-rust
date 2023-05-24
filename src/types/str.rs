@@ -34,6 +34,12 @@ impl From<&[u8]> for Str {
     }
 }
 
+impl From<Vec<u8>> for Str {
+    fn from(value: Vec<u8>) -> Self {
+        Self(value)
+    }
+}
+
 impl From<&str> for Str {
     fn from(value: &str) -> Self {
         Self::from(value.as_bytes())

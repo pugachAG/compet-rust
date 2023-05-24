@@ -15,12 +15,18 @@ impl<K: Hash + Eq> DefaultDict<K, usize> {
     }
 }
 
-impl<K: Hash + Eq, V: Default> DefaultDict<K, V> {
-    pub fn new() -> Self {
+impl<K: Hash + Eq, V: Clone> DefaultDict<K, V> {
+    pub fn with_default(v: V) -> Self {
         Self {
             map: HashMap::new(),
-            default_value: V::default(),
+            default_value: v,
         }
+    }
+}
+
+impl<K: Hash + Eq, V: Default + Clone> DefaultDict<K, V> {
+    pub fn new() -> Self {
+        Self::with_default(V::default())
     }
 }
 
@@ -32,9 +38,11 @@ impl<K: Hash + Eq, V: Default> Index<K> for DefaultDict<K, V> {
     }
 }
 
-impl<K: Hash + Eq, V: Default> IndexMut<K> for DefaultDict<K, V> {
+impl<K: Hash + Eq, V: Default + Clone> IndexMut<K> for DefaultDict<K, V> {
     fn index_mut(&mut self, index: K) -> &mut Self::Output {
-        self.map.entry(index).or_insert_with(V::default)
+        self.map
+            .entry(index)
+            .or_insert_with(|| self.default_value.clone())
     }
 }
 
