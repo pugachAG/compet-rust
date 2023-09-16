@@ -1,8 +1,8 @@
-pub type Mask = Vec<bool>;
-
 pub fn pair_count(n: usize) -> usize {
     n * n.saturating_sub(1) / 2
 }
+
+pub type Mask = Vec<bool>;
 
 pub fn generate_combinations(n: usize, k: usize) -> Vec<Mask> {
     assert!(k <= n);

@@ -52,6 +52,11 @@ impl<T: Hash + Eq> Multiset<T> {
     pub fn remove_all(&mut self, v: &T) {
         self.map.remove(v);
     }
+
+    pub fn clear(&mut self) {
+        self.map.clear();
+        self.len = 0;
+    }
 }
 
 impl<T: Hash + Eq> From<Vec<T>> for Multiset<T> {

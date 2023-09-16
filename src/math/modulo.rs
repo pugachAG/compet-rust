@@ -2,15 +2,21 @@ use std::fmt::Debug;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 use std::str::FromStr;
 
-use super::modulo_ops::{modulo_inv, modulo_pow};
+use super::modulo_ops::{modulo_inv, modulo_pow, Factorials, modulo_combinations};
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub struct Modulo<const MOD: u64>(u64);
 
 impl<const MOD: u64> Modulo<MOD> {
+    pub const ZERO: Self = Modulo(0);
+
     #[inline]
     pub fn new(v: u64) -> Self {
         Self(v % MOD)
+    }
+
+    pub fn combinatorics(n: usize) -> ModuloCombinatorics<MOD> {
+        ModuloCombinatorics::new(n)
     }
 
     pub fn val(&self) -> u64 {
@@ -220,5 +226,25 @@ impl<const MOD: u64> FromStr for Modulo<MOD> {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self::new(u64::from_str(s)?))
+    }
+}
+
+pub struct ModuloCombinatorics<const MOD: u64> {
+    factorials: Factorials,
+}
+
+impl<const MOD: u64> ModuloCombinatorics<MOD> {
+    pub fn new(n: usize) -> Self {
+        Self {
+            factorials: Factorials::new(n, MOD),
+        }
+    }
+
+    pub fn factorial(&self, n: usize) -> Modulo<MOD> {
+        Modulo::new(self.factorials.f(n))
+    }
+
+    pub fn combinations(&self, n: usize, k: usize) -> Modulo<MOD> {
+        Modulo::new(modulo_combinations(&self.factorials, n, k))
     }
 }
