@@ -1,6 +1,7 @@
-use std::ops::Range;
+use std::ops::{Range, RangeBounds};
 
 use crate::plat::classic::includes::def_vec;
+use crate::utils::misc::{assert_range, unpack_range};
 
 type CombineFn<T> = fn(&T, &T) -> T;
 
@@ -73,9 +74,10 @@ impl<T: Default + Clone> SegTree<T> {
         ret
     }
 
-    pub fn get(&self, l: usize, r: usize) -> T {
-        assert!(l <= r && r < self.n);
-        self.calc(&(l..r + 1), &self.root())
+    pub fn get(&self, rng_bounds: impl RangeBounds<usize>) -> T {
+        let rng = unpack_range(rng_bounds);
+        assert_range(&rng, 0..self.n, false);
+        self.calc(&rng, &self.root())
     }
 
     pub fn set(&mut self, i: usize, val: T) {

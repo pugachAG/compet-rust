@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 use std::str::FromStr;
 
-use super::modulo_ops::{modulo_inv, modulo_pow, Factorials, modulo_combinations};
+use super::modulo_ops::{modulo_combinations, modulo_inv, modulo_pow, Factorials};
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub struct Modulo<const MOD: u64>(u64);

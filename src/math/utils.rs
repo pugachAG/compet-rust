@@ -1,6 +1,7 @@
-use std::ops::{AddAssign, Sub};
+use std::ops::{AddAssign, RangeBounds, Sub};
 
 use crate::utils::collections::{def_vec, IntoVecExt};
+use crate::utils::misc::{assert_range, unpack_range};
 
 pub fn permutation_index(a: &[usize]) -> Vec<usize> {
     let n = a.len();
@@ -48,9 +49,10 @@ impl<T: AddAssign<T> + Sub<Output = T> + From<u8> + Copy> SliceRangeSum<T> {
         }
     }
 
-    pub fn sum(&self, l: usize, r: usize) -> T {
+    pub fn sum(&self, rng_bounds: impl RangeBounds<usize>) -> T {
         let n = self.pref.len() - 1;
-        assert!(l <= r && r < n);
-        self.pref[r + 1] - self.pref[l]
+        let rng = unpack_range(rng_bounds);
+        assert_range(&rng, 0..n, true);
+        self.pref[rng.end] - self.pref[rng.start]
     }
 }

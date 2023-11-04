@@ -14,7 +14,7 @@ pub fn seg_tree_sum() {
                 st.set(i, v);
                 for l in 0..cur.len() {
                     for r in l..cur.len() {
-                        let actual = st.get(l, r);
+                        let actual = st.get(l..=r);
                         let expected = cur[l..=r].iter().sum();
                         assert_eq!(actual, expected, "l = {l}, r = {r}, a = {cur:?}");
                     }

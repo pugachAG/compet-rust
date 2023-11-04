@@ -1,4 +1,4 @@
-use crate::math::modulo_ops::{modulo_inv, modulo_pow, modulo_combinations, Factorials};
+use crate::math::modulo_ops::{modulo_combinations, modulo_inv, modulo_pow, Factorials};
 
 const MOD: u64 = 10u64.pow(9) + 7;
 
@@ -29,7 +29,7 @@ fn modulo_combinations_simple() {
     }
     fn check(n: usize, k: usize) {
         let fact = |n: usize| (1..=n).fold(1, |acc, v| acc * v as u64);
-        let expected = fact(n) / (fact(k) * fact(n-k));
+        let expected = fact(n) / (fact(k) * fact(n - k));
         let actual = modulo_combinations(&Factorials::new(n, 998244353), n, k);
         assert_eq!(actual, expected, "n = {n}, k = {k}");
     }
