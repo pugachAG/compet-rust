@@ -24,10 +24,10 @@ pub fn seg_tree_sum() {
                 cur[i] = v;
                 st.set(i, SegTreeEl(v));
                 for l in 0..cur.len() {
-                    for r in l..cur.len() {
-                        let actual = st.get(l..=r).0;
-                        let expected = cur[l..=r].iter().sum();
-                        assert_eq!(actual, expected, "l = {l}, r = {r}, a = {cur:?}");
+                    for r in l..=cur.len() {
+                        let actual = st.get(l..r).0;
+                        let expected = cur[l..r].iter().sum();
+                        assert_eq!(actual, expected, "rng: {:?}, a = {cur:?}", l..r);
                     }
                 }
             }
