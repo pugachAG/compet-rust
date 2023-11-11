@@ -2,12 +2,15 @@ use std::ops::{Range, RangeBounds};
 
 use crate::utils::misc::{assert_range, unpack_range};
 
+/// See AtCoder library for more context:
+/// https://atcoder.github.io/ac-library/production/document_en/segtree.html
+///
 /// # Example
 /// ```
 /// #[derive(Copy, Clone)]
 /// struct SegTreeSum(i32);
 ///
-/// impl SegTreeMonoid for SegTreeSum {
+/// impl SegTreeValue for SegTreeSum {
 ///     fn op(l: Self, r: Self) -> Self {
 ///         Self(l.0 + r.0)
 ///     }
@@ -17,7 +20,7 @@ use crate::utils::misc::{assert_range, unpack_range};
 ///     }
 /// }
 /// ```
-pub trait SegTreeMonoid: Copy {
+pub trait SegTreeValue: Copy {
     fn op(l: Self, r: Self) -> Self;
 
     /// Identity element: op(x, e()) = op(e(), x) = x
@@ -29,7 +32,7 @@ pub struct SegTree<T> {
     st: Vec<T>,
 }
 
-impl<T: SegTreeMonoid> SegTree<T> {
+impl<T: SegTreeValue> SegTree<T> {
     pub fn with_size(n: usize) -> Self {
         Self {
             n,

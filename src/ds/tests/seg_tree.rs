@@ -1,4 +1,4 @@
-use crate::ds::seg_tree::{SegTree, SegTreeMonoid};
+use crate::ds::seg_tree::{SegTree, SegTreeValue};
 use crate::plat::classic::includes::IntoVecExt;
 
 #[test]
@@ -6,7 +6,7 @@ pub fn seg_tree_example() {
     #[derive(Copy, Clone)]
     struct SegTreeEl(i32);
 
-    impl SegTreeMonoid for SegTreeEl {
+    impl SegTreeValue for SegTreeEl {
         fn op(l: Self, r: Self) -> Self {
             Self(l.0 + r.0)
         }
@@ -19,7 +19,7 @@ pub fn seg_tree_example() {
     let mut st = SegTree::with_size(3);
     st.set(0, SegTreeEl(1));
     st.set(2, SegTreeEl(2));
-    let SegTreeEl(sum )= st.get(0..=2);
+    let SegTreeEl(sum) = st.get(0..=2);
     assert_eq!(sum, 3);
 }
 
@@ -27,7 +27,7 @@ pub fn seg_tree_example() {
 pub fn seg_tree_sum() {
     #[derive(Copy, Clone)]
     struct SegTreeEl(i32);
-    impl SegTreeMonoid for SegTreeEl {
+    impl SegTreeValue for SegTreeEl {
         fn op(l: Self, r: Self) -> Self {
             Self(l.0 + r.0)
         }
