@@ -1,7 +1,12 @@
 use std::ops::{AddAssign, RangeBounds, Sub};
 
+use crate::types::integer::Integer;
 use crate::utils::collections::{def_vec, IntoVecExt};
 use crate::utils::misc::{assert_range, unpack_range};
+
+pub fn div_up<T: Integer>(v: T, d: T) -> T {
+    (v + d - T::from(1)) / d
+}
 
 pub fn permutation_index(a: &[usize]) -> Vec<usize> {
     let n = a.len();
