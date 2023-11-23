@@ -1,7 +1,7 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Str(pub Vec<u8>);
 
 impl Str {
@@ -22,9 +22,9 @@ impl Str {
     }
 }
 
-impl ToString for Str {
-    fn to_string(&self) -> String {
-        self.as_str().to_owned()
+impl Display for Str {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 
@@ -101,6 +101,6 @@ impl<'a> IntoIterator for &'a mut Str {
 
 impl Debug for Str {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.as_str().fmt(f)
+        Debug::fmt(self.as_str(), f)
     }
 }
