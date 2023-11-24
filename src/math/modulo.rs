@@ -221,6 +221,12 @@ impl<const MOD: u64> From<Modulo<MOD>> for u64 {
     }
 }
 
+impl<const MOD: u64> From<usize> for Modulo<MOD> {
+    fn from(value: usize) -> Self {
+        Self::new(value as u64)
+    }
+}
+
 impl<const MOD: u64> FromStr for Modulo<MOD> {
     type Err = <u64 as FromStr>::Err;
 
