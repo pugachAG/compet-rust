@@ -36,7 +36,7 @@ impl<T: SegTreeValue> SegTree<T> {
     pub fn with_size(n: usize) -> Self {
         Self {
             n,
-            st: vec![T::e(); Self::st_len(n)],
+            st: vec![T::e(); seg_tree_st_len(n)],
         }
     }
 
@@ -113,39 +113,39 @@ impl<T: SegTreeValue> SegTree<T> {
     fn recalc(&mut self, pos: &Pos, left: &Pos, right: &Pos) {
         self.st[pos.st_i] = T::op(self.st[left.st_i], self.st[right.st_i]);
     }
-
-    fn st_len(n: usize) -> usize {
-        let mut ret = 1;
-        while ret < n {
-            ret *= 2;
-        }
-        ret * 2
-    }
 }
 
-struct Pos {
-    st_i: usize,
-    range: Range<usize>,
+pub(super) fn seg_tree_st_len(n: usize) -> usize {
+    let mut ret = 1;
+    while ret < n {
+        ret *= 2;
+    }
+    ret * 2
+}
+
+pub(super) struct Pos {
+    pub st_i: usize,
+    pub range: Range<usize>,
 }
 
 impl Pos {
     #[inline]
-    fn is_inside(&self, range: &Range<usize>) -> bool {
+    pub fn is_inside(&self, range: &Range<usize>) -> bool {
         range.start <= self.range.start && range.end >= self.range.end
     }
 
     #[inline]
-    fn intersects(&self, range: &Range<usize>) -> bool {
+    pub fn intersects(&self, range: &Range<usize>) -> bool {
         self.range.start < range.end && range.start < self.range.end
     }
 
     #[inline]
-    fn contains(&self, i: usize) -> bool {
+    pub fn contains(&self, i: usize) -> bool {
         self.range.contains(&i)
     }
 
     #[inline]
-    fn single_point(&self) -> Option<usize> {
+    pub fn single_point(&self) -> Option<usize> {
         if self.range.len() == 1 {
             Some(self.range.start)
         } else {
@@ -153,7 +153,7 @@ impl Pos {
         }
     }
 
-    fn split(&self) -> (Pos, Pos) {
+    pub fn split(&self) -> (Pos, Pos) {
         let Pos {
             st_i,
             range: Range { start, end },
