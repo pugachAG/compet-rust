@@ -12,6 +12,14 @@ impl Random {
         Self { state: seed }
     }
 
+    pub fn from_cur_time() -> Self {
+        let seed = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as usize;
+        Self::new(seed)
+    }
+
     pub fn gen(&mut self) -> usize {
         let mut x = self.state;
         x ^= x << 13;
