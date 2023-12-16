@@ -9,6 +9,7 @@ pub struct Modulo<const MOD: u64>(u64);
 
 impl<const MOD: u64> Modulo<MOD> {
     pub const ZERO: Self = Modulo(0);
+    pub const ONE: Self = Modulo(1);
 
     #[inline]
     pub fn new(v: u64) -> Self {

@@ -24,7 +24,7 @@ impl Str {
 
 impl Display for Str {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.0.fmt(f)
+        std::fmt::Display::fmt(&self.as_str(), f)
     }
 }
 
