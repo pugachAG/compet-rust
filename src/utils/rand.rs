@@ -38,4 +38,12 @@ impl Random {
     pub fn gen_f64(&mut self) -> f64 {
         (self.gen() as f64) / (std::usize::MAX as f64)
     }
+
+    pub fn shuffle<T>(&mut self, data: &mut [T]) {
+        let n = data.len();
+        for i in 0..n.saturating_sub(1) {
+            let j = self.gen_range(i..n);
+            data.swap(i, j);
+        }
+    }
 }

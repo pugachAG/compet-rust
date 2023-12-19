@@ -134,3 +134,17 @@ impl<T: Clone + Ord> SliceMinMaxExt for &[T] {
         self.iter().max().unwrap().clone()
     }
 }
+
+pub trait SliceSumExt {
+    type Item;
+
+    fn sum(self) -> Self::Item;
+}
+
+impl<T: Clone + std::iter::Sum<T>> SliceSumExt for &[T] {
+    type Item = T;
+
+    fn sum(self) -> Self::Item {
+        self.iter().cloned().sum::<Self::Item>()
+    }
+}
