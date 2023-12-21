@@ -5,21 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            // https://github.com/vadimcn/codelldb/blob/v1.10.0/MANUAL.md
             "name": "launch",
-            "type": "cppdbg",
+            "type": "lldb",
             "request": "launch",
+            "sourceLanguages": ["rust"],
             "program": "${workspaceFolder}/target/debug/compet-rust",
             "args": [],
-            "stopAtEntry": false,
+            "stopOnEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [{ "name": "LOCAL", "value": "1" }, { "name": "RUST_BACKTRACE", "value": "1" }],
-            "externalConsole": false,
-            "MIMode": "lldb",
+            "env": { "LOCAL": "1", "RUST_BACKTRACE": "1" },
             "preLaunchTask": "cargo build",
             "postDebugTask": "cat output",
-            "logging": {
-                "moduleLoad": false
-            }
         },
     ]
 }
