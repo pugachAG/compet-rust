@@ -2,6 +2,7 @@ pub mod combinatorics;
 pub mod divs;
 pub mod modulo;
 pub mod modulo_ops;
+pub mod permutations;
 pub mod sqrt;
 pub mod utils;
 
