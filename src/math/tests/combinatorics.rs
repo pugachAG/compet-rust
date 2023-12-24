@@ -1,4 +1,4 @@
-use crate::math::combinatorics::{generate_combinations, next_permutation};
+use crate::math::combinatorics::{generate_combinations, next_permutation, permutations};
 use crate::plat::classic::includes::{IntoVecExt, Str};
 
 #[test]
@@ -26,6 +26,16 @@ fn next_permutation_basic() {
     check_no_next_permutation("1");
     check_permutations_chain(&["12", "21"]);
     check_permutations_chain(&["123", "132", "213", "231", "312", "321"]);
+}
+
+#[test]
+fn permutations_basic() {
+    let mut actual = Vec::new();
+    let mut perms = permutations(2);
+    while let Some(perm) = perms.next() {
+        actual.push(perm.to_vec());
+    }
+    assert_eq!(actual, vec![vec![0, 1], vec![1, 0]]);
 }
 
 #[test]
