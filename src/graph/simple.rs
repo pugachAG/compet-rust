@@ -15,8 +15,8 @@ impl SimpleGraph {
         self.edges.len()
     }
 
-    pub fn neighbours(&self, v: NodeIndex) -> &[NodeIndex] {
-        &self.edges[v]
+    pub fn neighbours<'a>(&'a self, v: NodeIndex) -> impl Iterator<Item = NodeIndex> + 'a {
+        self.edges[v].iter().cloned()
     }
 
     pub fn add_node(&mut self) -> NodeIndex {
