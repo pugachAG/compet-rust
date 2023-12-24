@@ -1,3 +1,4 @@
+mod combinations;
 mod combinatorics;
 mod divs;
 mod modulo;

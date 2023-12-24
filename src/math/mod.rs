@@ -1,3 +1,4 @@
+pub mod combinations;
 pub mod combinatorics;
 pub mod divs;
 pub mod modulo;

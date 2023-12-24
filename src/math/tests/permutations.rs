@@ -2,14 +2,6 @@ use crate::math::permutations::{next_permutation, permutations};
 use crate::plat::classic::includes::Str;
 
 #[test]
-fn next_permutation_basic() {
-    check_no_next_permutation("");
-    check_no_next_permutation("1");
-    check_permutations_chain(&["12", "21"]);
-    check_permutations_chain(&["123", "132", "213", "231", "312", "321"]);
-}
-
-#[test]
 fn permutations_basic() {
     let mut actual = Vec::new();
     let mut perms = permutations(2);
@@ -17,6 +9,14 @@ fn permutations_basic() {
         actual.push(perm.to_vec());
     }
     assert_eq!(actual, vec![vec![0, 1], vec![1, 0]]);
+}
+
+#[test]
+fn next_permutation_basic() {
+    check_no_next_permutation("");
+    check_no_next_permutation("1");
+    check_permutations_chain(&["12", "21"]);
+    check_permutations_chain(&["123", "132", "213", "231", "312", "321"]);
 }
 
 #[test]

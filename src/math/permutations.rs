@@ -1,3 +1,11 @@
+/// Usage example: `permutations_basic` test
+pub fn permutations(n: usize) -> PermutationGenerator {
+    PermutationGenerator {
+        init: true,
+        state: (0..n).collect(),
+    }
+}
+
 pub struct PermutationGenerator {
     init: bool,
     state: Vec<usize>,
@@ -13,14 +21,6 @@ impl PermutationGenerator {
         } else {
             None
         }
-    }
-}
-
-/// Usage example: `permutations_basic` test
-pub fn permutations(n: usize) -> PermutationGenerator {
-    PermutationGenerator {
-        init: true,
-        state: (0..n).collect(),
     }
 }
 
