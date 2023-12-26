@@ -1,4 +1,4 @@
-use crate::math::combinatorics::{factorial, combinations_count};
+use crate::math::combinatorics::{combinations_count, factorial};
 
 #[test]
 fn factorial_basic() {

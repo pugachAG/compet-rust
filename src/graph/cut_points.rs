@@ -1,4 +1,4 @@
-use super::simple::{SimpleGraph, NodeIndex};
+use super::simple::{NodeIndex, SimpleGraph};
 
 /// https://cp-algorithms.com/graph/cutpoints.html
 /// The graph expected to be undirected.
@@ -20,7 +20,6 @@ struct State {
     ans: Vec<usize>,
 }
 
-
 impl State {
     const NOT_VISITED: usize = 0;
 
@@ -29,7 +28,7 @@ impl State {
             tin: vec![Self::NOT_VISITED; n],
             low: vec![Self::NOT_VISITED; n],
             timer: Self::NOT_VISITED + 1,
-            ans: vec![]
+            ans: vec![],
         }
     }
 
@@ -68,4 +67,3 @@ impl State {
         self.low[v] = low;
     }
 }
-

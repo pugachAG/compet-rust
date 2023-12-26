@@ -1,6 +1,6 @@
 pub mod con_comps;
-pub mod simple;
 pub mod cut_points;
+pub mod simple;
 
 #[cfg(test)]
 mod tests;
