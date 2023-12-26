@@ -1,25 +1,25 @@
 use crate::graph::con_comps::connected_components;
-use crate::graph::cut_points::cut_points;
+use crate::graph::cut_points::{cut_connected_components, CutConComps};
 use crate::graph::simple::{NodeIndex, SimpleGraph};
-use crate::plat::classic::includes::{IntoVecExt, SliceSortedExt};
+use crate::plat::classic::includes::IntoVecExt;
 use crate::utils::rand::Random;
 
 use super::utils::undirected_graph;
 
 #[test]
-fn cut_points_basic() {
-    check_cut_points(undirected_graph(1, &[]), vec![]);
-    check_cut_points(undirected_graph(2, &[(0, 1)]), vec![]);
-    check_cut_points(undirected_graph(3, &[(0, 1), (1, 2)]), vec![1]);
+fn cut_vertices_basic() {
+    check_cut_vertices(undirected_graph(1, &[]), vec![]);
+    check_cut_vertices(undirected_graph(2, &[(0, 1)]), vec![]);
+    check_cut_vertices(undirected_graph(3, &[(0, 1), (1, 2)]), vec![1]);
 }
 
 #[test]
-fn cut_points_random_small() {
+fn cut_connected_components_random_small() {
     test_random(5, 300);
 }
 
 #[test]
-fn cut_points_random_big() {
+fn cut_connected_components_random_big() {
     test_random(10, 100);
 }
 
@@ -31,13 +31,13 @@ fn test_random(n: usize, iters: usize) {
         rand.shuffle(&mut all_edges);
         let m = rand.gen_range(0..=all_edges.len());
         let edges = &all_edges[0..m];
-        check_cut_points(undirected_graph(n, edges), cut_points_naive(n, edges));
+        check_cut_con_comps(undirected_graph(n, edges), cut_points_naive(n, edges));
     }
 }
 
-fn cut_points_naive(n: usize, edges: &[(NodeIndex, NodeIndex)]) -> Vec<NodeIndex> {
-    let mut ret = Vec::new();
+fn cut_points_naive(n: usize, edges: &[(NodeIndex, NodeIndex)]) -> CutConComps {
     let cc = connected_components(&undirected_graph(n, edges)).len();
+    let mut cut_cc = Vec::with_capacity(n);
     for v in 0..n {
         let edges = edges
             .iter()
@@ -45,15 +45,19 @@ fn cut_points_naive(n: usize, edges: &[(NodeIndex, NodeIndex)]) -> Vec<NodeIndex
             .cloned()
             .into_vec();
         let new_cc = connected_components(&undirected_graph(n, &edges)).len() - 1;
-        if new_cc > cc {
-            ret.push(v);
-        }
+        cut_cc.push(new_cc);
     }
-    ret
+    CutConComps { cc, cut_cc }
 }
 
 #[track_caller]
-fn check_cut_points(g: SimpleGraph, expected: Vec<NodeIndex>) {
-    let actual = cut_points(&g);
-    assert_eq!(actual.sorted(), expected.sorted(), "graph: {g:?}");
+fn check_cut_vertices(g: SimpleGraph, expected: Vec<NodeIndex>) {
+    let actual = cut_connected_components(&g).cut_vertices().into_vec();
+    assert_eq!(actual, expected, "graph: {g:?}");
+}
+
+#[track_caller]
+fn check_cut_con_comps(g: SimpleGraph, expected: CutConComps) {
+    let actual = cut_connected_components(&g);
+    assert_eq!(actual, expected, "graph: {g:?}");
 }
