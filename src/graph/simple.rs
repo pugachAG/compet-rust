@@ -2,6 +2,7 @@ use crate::utils::collections::def_vec;
 
 pub type NodeIndex = usize;
 
+#[derive(Debug)]
 pub struct SimpleGraph {
     edges: Vec<Vec<NodeIndex>>,
 }
