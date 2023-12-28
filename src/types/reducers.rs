@@ -3,13 +3,13 @@ pub struct Reducer<T> {
     f: fn(T, T) -> T,
 }
 
-impl<T: Ord> Reducer<T> {
+impl<T: PartialOrd> Reducer<T> {
     pub fn min() -> Self {
-        Self::new(T::min)
+        Self::new(|cur, upd| if upd.lt(&cur) { upd } else { cur })
     }
 
     pub fn max() -> Self {
-        Self::new(T::max)
+        Self::new(|cur, upd| if upd.gt(&cur) { upd } else { cur })
     }
 }
 
