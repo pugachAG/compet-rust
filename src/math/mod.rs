@@ -1,3 +1,4 @@
+pub mod bitmask;
 pub mod combinations;
 pub mod combinatorics;
 pub mod divs;
