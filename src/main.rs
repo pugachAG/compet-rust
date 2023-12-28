@@ -1,3 +1,5 @@
+use crate::plat::classic::run;
+
 pub mod plat;
 
 pub mod algo;
@@ -7,5 +9,5 @@ pub mod types;
 pub mod utils;
 
 fn main() {
-    plat::classic::run();
+    run();
 }
