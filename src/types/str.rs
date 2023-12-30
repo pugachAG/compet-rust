@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Display};
 use std::ops::{Deref, DerefMut};
 
-#[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord, Hash)]
 pub struct Str(pub Vec<u8>);
 
 impl Str {
