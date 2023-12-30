@@ -39,14 +39,17 @@ impl<T: Hash + Eq> Multiset<T> {
         self.len += 1;
     }
 
-    pub fn remove_one(&mut self, v: &T) {
+    /// returns the remaining count
+    pub fn remove_one(&mut self, v: &T) -> usize {
         if let Some(cnt) = self.map.get_mut(&v) {
             if *cnt > 1 {
                 *cnt -= 1;
+                return *cnt;
             } else {
                 self.map.remove(&v);
             }
         }
+        0
     }
 
     pub fn remove_all(&mut self, v: &T) {
