@@ -3,4 +3,4 @@ pub mod cut_points;
 pub mod simple;
 
 #[cfg(test)]
-mod tests;
+pub mod tests;
