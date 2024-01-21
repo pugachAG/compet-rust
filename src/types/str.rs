@@ -1,6 +1,8 @@
 use std::fmt::{Debug, Display};
 use std::ops::{Deref, DerefMut};
 
+use crate::plat::classic::includes::SliceReversedExt;
+
 #[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord, Hash)]
 pub struct Str(pub Vec<u8>);
 
@@ -19,6 +21,10 @@ impl Str {
 
     pub fn count(&self, ch: u8) -> usize {
         self.iter().filter(|&&c| c == ch).count()
+    }
+
+    pub fn reversed(&self) -> Str {
+        Str(self.0.reversed())
     }
 }
 

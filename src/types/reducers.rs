@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Reducer<T> {
     acc: Option<T>,
     f: fn(T, T) -> T,

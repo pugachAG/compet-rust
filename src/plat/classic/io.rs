@@ -93,6 +93,11 @@ macro_rules! output {
         $io.printer.print(&(if $val { "Yes" } else { "No" }));
         $crate::output!{ $io => $($tail)* }
     };
+    ($io:ident => YN $val:tt $($tail:tt)*) => {
+        #[allow(unused_parens)]
+        $io.printer.print(&(if $val { "YES" } else { "NO" }));
+        $crate::output!{ $io => $($tail)* }
+    };
     ($io:ident => $head:tt $($tail:tt)*) => {
         $crate::output!{ $io => $head }
         $crate::output!{ $io => $($tail)* }

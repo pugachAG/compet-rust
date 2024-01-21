@@ -40,9 +40,8 @@ impl<K: Hash + Eq, V: Default> Index<K> for DefaultDict<K, V> {
 
 impl<K: Hash + Eq, V: Default + Clone> IndexMut<K> for DefaultDict<K, V> {
     fn index_mut(&mut self, index: K) -> &mut Self::Output {
-        self.map
-            .entry(index)
-            .or_insert_with(|| self.default_value.clone())
+        let default = self.default_value.clone();
+        self.map.entry(index).or_insert(default)
     }
 }
 

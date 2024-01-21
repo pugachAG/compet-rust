@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct BitMask(usize);
 
 impl BitMask {
@@ -12,8 +13,17 @@ impl BitMask {
             .filter(move |bt| ((1 << bt) & v2) > 0)
     }
 
+    pub fn ones_with_rest(&self) -> impl Iterator<Item = (usize, BitMask)> {
+        let v = self.0;
+        self.ones().map(move |bt| (bt, BitMask(v ^ (1 << bt))))
+    }
+
     pub fn all_count(n: usize) -> usize {
         1 << n
+    }
+
+    pub fn all_ones(n: usize) -> BitMask {
+        BitMask(Self::all_count(n).saturating_sub(1))
     }
 
     pub fn all(n: usize) -> impl Iterator<Item = Self> {

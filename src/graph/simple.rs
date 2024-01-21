@@ -12,6 +12,14 @@ impl SimpleGraph {
         Self { edges: def_vec(n) }
     }
 
+    pub fn with_edges(n: usize, edges: &[(NodeIndex, NodeIndex)]) -> Self {
+        let mut ret = Self::new(n);
+        for &(v, u) in edges {
+            ret.add_edge(v, u);
+        }
+        ret
+    }
+
     pub fn node_count(&self) -> usize {
         self.edges.len()
     }

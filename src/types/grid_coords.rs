@@ -19,6 +19,7 @@ impl GridCoordinates {
         self.n * self.m
     }
 
+    #[inline]
     pub fn left_neighbour(&self, v: usize) -> Option<usize> {
         if v % self.m > 0 {
             Some(v - 1)
@@ -27,6 +28,7 @@ impl GridCoordinates {
         }
     }
 
+    #[inline]
     pub fn right_neightbour(&self, v: usize) -> Option<usize> {
         if v % self.m + 1 < self.m {
             Some(v + 1)
@@ -35,10 +37,12 @@ impl GridCoordinates {
         }
     }
 
+    #[inline]
     pub fn top_neighbour(&self, v: usize) -> Option<usize> {
         v.checked_sub(self.m)
     }
 
+    #[inline]
     pub fn bottom_neighbour(&self, v: usize) -> Option<usize> {
         if v + self.m < self.len() {
             Some(v + self.m)
@@ -58,17 +62,21 @@ impl GridCoordinates {
         .flat_map(|o| o)
     }
 
-    pub fn to_indices(&self, v: usize) -> (usize, usize) {
+    pub fn to_point(&self, v: usize) -> (usize, usize) {
         (v / self.m, v % self.m)
     }
 
+    pub fn from_point(&self, i: usize, j: usize) -> usize {
+        i * self.m + j
+    }
+
     pub fn at<'a, T>(&self, grid: &'a impl Grid<T>, v: usize) -> &'a T {
-        let (i, j) = self.to_indices(v);
+        let (i, j) = self.to_point(v);
         grid.at(i, j)
     }
 
     pub fn at_mut<'a, T>(&self, grid: &'a mut impl Grid<T>, v: usize) -> &'a mut T {
-        let (i, j) = self.to_indices(v);
+        let (i, j) = self.to_point(v);
         grid.at_mut(i, j)
     }
 }
