@@ -1,22 +1,71 @@
-use crate::types::integer::Integer;
+#![allow(unused_imports)]
+#![allow(unused_macros)]
+/// Usage example: `seg_tree_value_macros` test
 
-use super::seg_tree::SegTreeValue;
+macro_rules! simple_seg_tree_value {
+    ($name:ident, $type:ty, $l:ident, $r:ident, $op:expr, $e:expr) => {
+        #[derive(Copy, Clone)]
+        struct $name($type);
 
-#[derive(Clone, Copy)]
-pub struct SegTreeSum<T: Integer>(pub T);
+        impl crate::ds::seg_tree::SegTreeValue for $name {
+            fn op(l: Self, r: Self) -> Self {
+                let $l = l.0;
+                let $r = r.0;
+                Self($op)
+            }
 
-impl<T: Integer> SegTreeSum<T> {
-    pub fn new(v: T) -> Self {
-        Self(v)
-    }
+            fn e() -> Self {
+                Self($e)
+            }
+        }
+    };
 }
 
-impl<T: Integer> SegTreeValue for SegTreeSum<T> {
-    fn op(l: Self, r: Self) -> Self {
-        Self(l.0 + r.0)
-    }
+pub(crate) use simple_seg_tree_value;
 
-    fn e() -> Self {
-        Self(0.into())
-    }
+macro_rules! seg_tree_value_sum {
+    ($name:ident, $type:ty) => {
+        $crate::ds::seg_tree_values::seg_tree_value_sum!($name, $type, 0);
+    };
+    ($name:ident, $type:ty, $e:expr) => {
+        $crate::ds::seg_tree_values::simple_seg_tree_value!($name, $type, l, r, l + r, $e);
+    };
 }
+
+pub(crate) use seg_tree_value_sum;
+
+macro_rules! seg_tree_value_min {
+    ($name:ident, $type:ident) => {
+        $crate::ds::seg_tree_values::seg_tree_value_min!($name, $type, $type::MAX);
+    };
+    ($name:ident, $type:ty, $e:expr) => {
+        $crate::ds::seg_tree_values::simple_seg_tree_value!(
+            $name,
+            $type,
+            l,
+            r,
+            std::cmp::min(l, r),
+            $e
+        );
+    };
+}
+
+pub(crate) use seg_tree_value_min;
+
+macro_rules! seg_tree_value_max {
+    ($name:ident, $type:ident) => {
+        $crate::ds::seg_tree_values::seg_tree_value_max!($name, $type, $type::MIN);
+    };
+    ($name:ident, $type:ty, $e:expr) => {
+        $crate::ds::seg_tree_values::simple_seg_tree_value!(
+            $name,
+            $type,
+            l,
+            r,
+            std::cmp::max(l, r),
+            $e
+        );
+    };
+}
+
+pub(crate) use seg_tree_value_max;
