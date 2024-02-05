@@ -64,6 +64,34 @@ impl<T: SegTreeValue> SegTree<T> {
         self.update(i, val, &self.root());
     }
 
+    /// [1 1 1 1 0 0]
+    ///  l     ^   r
+    pub fn max_prefix<P>(
+        &self,
+        rng_bounds: impl RangeBounds<usize>,
+        mut predicate: P,
+    ) -> Option<usize>
+    where
+        P: FnMut(T) -> bool,
+    {
+        let rng = unpack_range(rng_bounds);
+        assert_range(&rng, 0..self.n, true);
+        if !rng.is_empty() {
+            match self.find_max_prefix(&rng, &mut predicate, &self.root(), T::e()) {
+                BinSearchOutput::All(_) => Some(rng.end - 1),
+                BinSearchOutput::Index(i) => {
+                    if i > rng.start {
+                        Some(i - 1)
+                    } else {
+                        None
+                    }
+                }
+            }
+        } else {
+            None
+        }
+    }
+
     fn update(&mut self, i: usize, val: T, pos: &Pos) {
         if pos.single_point().is_some() {
             self.st[pos.st_i] = val;
@@ -100,6 +128,42 @@ impl<T: SegTreeValue> SegTree<T> {
             self.build(a, left);
             self.build(a, right);
             self.recalc(pos, left, right);
+        }
+    }
+
+    fn find_max_prefix<P>(
+        &self,
+        rng: &Range<usize>,
+        predicate: &mut P,
+        pos: &Pos,
+        carryover: T,
+    ) -> BinSearchOutput<T>
+    where
+        P: FnMut(T) -> bool,
+    {
+        if pos.is_inside(rng) {
+            let v = T::op(carryover, self.st[pos.st_i]);
+            if (*predicate)(v) {
+                return BinSearchOutput::All(v);
+            }
+        }
+        if let Some(i) = pos.single_point() {
+            return BinSearchOutput::Index(i);
+        }
+        let (ref left, ref right) = pos.split();
+        if left.intersects(rng) {
+            match self.find_max_prefix(rng, predicate, left, carryover) {
+                BinSearchOutput::All(v) => {
+                    if right.intersects(rng) {
+                        self.find_max_prefix(rng, predicate, right, v)
+                    } else {
+                        BinSearchOutput::Index(left.range.end)
+                    }
+                }
+                index => index,
+            }
+        } else {
+            self.find_max_prefix(rng, predicate, right, carryover)
         }
     }
 
@@ -170,4 +234,9 @@ impl Pos {
             },
         )
     }
+}
+
+enum BinSearchOutput<T> {
+    All(T),
+    Index(usize),
 }
