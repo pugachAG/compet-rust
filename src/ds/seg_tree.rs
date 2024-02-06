@@ -78,8 +78,8 @@ impl<T: SegTreeValue> SegTree<T> {
         assert_range(&rng, 0..self.n, true);
         if !rng.is_empty() {
             match self.find_max_prefix(&rng, &mut predicate, &self.root(), T::e()) {
-                BinSearchOutput::All(_) => Some(rng.end - 1),
-                BinSearchOutput::Index(i) => {
+                MaxPrefixOutput::All(_) => Some(rng.end - 1),
+                MaxPrefixOutput::Index(i) => {
                     if i > rng.start {
                         Some(i - 1)
                     } else {
@@ -137,27 +137,27 @@ impl<T: SegTreeValue> SegTree<T> {
         predicate: &mut P,
         pos: &Pos,
         carryover: T,
-    ) -> BinSearchOutput<T>
+    ) -> MaxPrefixOutput<T>
     where
         P: FnMut(T) -> bool,
     {
         if pos.is_inside(rng) {
             let v = T::op(carryover, self.st[pos.st_i]);
             if (*predicate)(v) {
-                return BinSearchOutput::All(v);
+                return MaxPrefixOutput::All(v);
             }
         }
         if let Some(i) = pos.single_point() {
-            return BinSearchOutput::Index(i);
+            return MaxPrefixOutput::Index(i);
         }
         let (ref left, ref right) = pos.split();
         if left.intersects(rng) {
             match self.find_max_prefix(rng, predicate, left, carryover) {
-                BinSearchOutput::All(v) => {
+                MaxPrefixOutput::All(v) => {
                     if right.intersects(rng) {
                         self.find_max_prefix(rng, predicate, right, v)
                     } else {
-                        BinSearchOutput::Index(left.range.end)
+                        MaxPrefixOutput::Index(left.range.end)
                     }
                 }
                 index => index,
@@ -236,7 +236,7 @@ impl Pos {
     }
 }
 
-enum BinSearchOutput<T> {
+enum MaxPrefixOutput<T> {
     All(T),
     Index(usize),
 }
