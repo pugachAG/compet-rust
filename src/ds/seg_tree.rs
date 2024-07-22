@@ -33,7 +33,7 @@ pub struct SegTree<T> {
 }
 
 impl<T: SegTreeValue> SegTree<T> {
-    pub fn with_size(n: usize) -> Self {
+    pub fn with_len(n: usize) -> Self {
         Self {
             n,
             st: vec![T::e(); seg_tree_st_len(n)],
@@ -42,11 +42,15 @@ impl<T: SegTreeValue> SegTree<T> {
 
     pub fn new(a: &[T]) -> Self {
         let n = a.len();
-        let mut ret = Self::with_size(n);
+        let mut ret = Self::with_len(n);
         if n > 0 {
             ret.build(a, &ret.root());
         }
         ret
+    }
+
+    pub fn len(&self) -> usize {
+        self.n
     }
 
     pub fn get(&self, rng_bounds: impl RangeBounds<usize>) -> T {

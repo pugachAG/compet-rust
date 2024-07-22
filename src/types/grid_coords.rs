@@ -19,6 +19,10 @@ impl GridCoordinates {
         self.n * self.m
     }
 
+    pub fn all(&self) -> std::ops::Range<usize> {
+        0..self.len()
+    }
+
     #[inline]
     pub fn left_neighbour(&self, v: usize) -> Option<usize> {
         if v % self.m > 0 {
@@ -52,14 +56,17 @@ impl GridCoordinates {
     }
 
     pub fn side_neightbours(&self, v: usize) -> impl Iterator<Item = usize> {
-        [
-            self.left_neighbour(v),
-            self.top_neighbour(v),
-            self.right_neightbour(v),
-            self.bottom_neighbour(v),
-        ]
-        .into_iter()
-        .flat_map(|o| o)
+        let left = self.left_neighbour(v);
+        let top = self.top_neighbour(v);
+        let right = self.right_neightbour(v);
+        let bottom = self.bottom_neighbour(v);
+        // using iter::once with chain here instead of [left, top, right, bottom].into_iter()
+        // to make it work with old compiler version on cses
+        std::iter::once(left)
+            .chain(std::iter::once(top))
+            .chain(std::iter::once(right))
+            .chain(std::iter::once(bottom))
+            .flat_map(|o| o)
     }
 
     pub fn to_point(&self, v: usize) -> (usize, usize) {

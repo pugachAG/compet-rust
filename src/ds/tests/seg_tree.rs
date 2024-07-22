@@ -19,7 +19,7 @@ fn seg_tree_example() {
         }
     }
 
-    let mut st = SegTree::with_size(3);
+    let mut st = SegTree::with_len(3);
     st.set(0, SegTreeEl(1));
     st.set(2, SegTreeEl(2));
     let SegTreeEl(sum) = st.get(0..=2);

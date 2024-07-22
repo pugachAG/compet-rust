@@ -14,6 +14,10 @@ impl<T: Hash + Eq> Multiset<T> {
         }
     }
 
+    pub fn reserve(&mut self, n: usize) {
+        self.map.reserve(n);
+    }
+
     pub fn len(&self) -> usize {
         self.len
     }
@@ -37,6 +41,10 @@ impl<T: Hash + Eq> Multiset<T> {
     pub fn insert(&mut self, v: T) {
         self.map[v] += 1;
         self.len += 1;
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
+        self.map.keys()
     }
 
     pub fn iter_with_count(&self) -> impl Iterator<Item = (&T, usize)> {

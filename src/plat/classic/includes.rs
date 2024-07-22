@@ -8,3 +8,4 @@ pub use crate::utils::collections::{
 pub use crate::{exec_mode, input, output};
 pub use std::cmp::{max, min, Reverse};
 pub use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, VecDeque};
+pub use std::iter::FromIterator;

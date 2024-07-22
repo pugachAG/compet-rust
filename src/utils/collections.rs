@@ -2,15 +2,18 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 pub type Vec2<T> = Vec<Vec<T>>;
+pub type Vec3<T> = Vec<Vec<Vec<T>>>;
 
 pub fn def_vec<T: Default>(n: usize) -> Vec<T> {
     (0..n).map(|_| T::default()).into_vec()
 }
 
 pub fn def_vec2<T: Default>(n: usize, m: usize) -> Vec2<T> {
-    (0..n)
-        .map(|_| (0..m).map(|_| T::default()).into_vec())
-        .into_vec()
+    (0..n).map(|_| def_vec(m)).into_vec()
+}
+
+pub fn def_vec3<T: Default>(n: usize, m: usize, k: usize) -> Vec3<T> {
+    (0..n).map(|_| def_vec2(m, k)).into_vec()
 }
 
 pub trait IntoVecExt {

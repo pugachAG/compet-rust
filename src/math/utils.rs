@@ -1,3 +1,5 @@
+use std::collections::{BTreeMap, BTreeSet};
+use std::iter::FromIterator;
 use std::ops::{AddAssign, RangeBounds, Sub};
 
 use crate::types::integer::Integer;
@@ -18,7 +20,16 @@ pub fn permutation_index(a: &[usize]) -> Vec<usize> {
     ans
 }
 
-pub fn coordinate_compress<T: Ord>(a: &[T]) -> Vec<usize> {
+pub fn coordinate_compress_map<T: Ord>(iter: impl Iterator<Item = T>) -> BTreeMap<T, usize> {
+    BTreeMap::from_iter(
+        BTreeSet::from_iter(iter)
+            .into_iter()
+            .enumerate()
+            .map(|(i, v)| (v, i)),
+    )
+}
+
+pub fn coordinate_compress_unique<T: Ord>(a: &[T]) -> Vec<usize> {
     let n = a.len();
     let mut indices = (0..n).into_vec();
     indices.sort_by_key(|&i| &a[i]);

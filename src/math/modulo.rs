@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::iter::Sum;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 use std::str::FromStr;
 
@@ -253,5 +254,11 @@ impl<const MOD: u64> ModuloCombinatorics<MOD> {
 
     pub fn combinations(&self, n: usize, k: usize) -> Modulo<MOD> {
         Modulo::new(modulo_combinations(&self.factorials, n, k))
+    }
+}
+
+impl<const MOD: u64> Sum for Modulo<MOD> {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        iter.fold(Self::ZERO, |a, b| a + b)
     }
 }

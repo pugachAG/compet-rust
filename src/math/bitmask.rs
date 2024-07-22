@@ -1,3 +1,5 @@
+use std::ops::{BitAnd, BitOr, BitXor};
+
 #[derive(Clone, Copy)]
 pub struct BitMask(usize);
 
@@ -6,16 +8,13 @@ impl BitMask {
         self.0
     }
 
-    pub fn ones(&self) -> impl Iterator<Item = usize> {
-        let (v1, v2) = (self.0, self.0);
-        (0..usize::BITS as usize)
-            .take_while(move |&bt| (1 << bt) <= v1)
-            .filter(move |bt| ((1 << bt) & v2) > 0)
+    #[inline]
+    pub fn has_one_at(&self, i: usize) -> bool {
+        (self.0 & (1 << i)) > 0
     }
 
-    pub fn ones_with_rest(&self) -> impl Iterator<Item = (usize, BitMask)> {
-        let v = self.0;
-        self.ones().map(move |bt| (bt, BitMask(v ^ (1 << bt))))
+    pub fn one_indices(self) -> impl Iterator<Item = usize> {
+        self.bit_indices().filter(move |&bt| self.has_one_at(bt))
     }
 
     pub fn all_count(n: usize) -> usize {
@@ -30,8 +29,13 @@ impl BitMask {
         (0..Self::all_count(n)).map(|mask| Self(mask))
     }
 
-    pub fn submasks(&self) -> SubmaskIter {
+    pub fn submasks(self) -> SubmaskIter {
         SubmaskIter::new(self.0)
+    }
+
+    fn bit_indices(&self) -> impl Iterator<Item = usize> {
+        let v1 = self.0;
+        (0..usize::BITS as usize).take_while(move |&bt| (1 << bt) <= v1)
     }
 }
 
@@ -63,5 +67,29 @@ impl Iterator for SubmaskIter {
         } else {
             None
         }
+    }
+}
+
+impl BitXor for BitMask {
+    type Output = Self;
+
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self(self.val() ^ rhs.val())
+    }
+}
+
+impl BitOr for BitMask {
+    type Output = Self;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self(self.val() | rhs.val())
+    }
+}
+
+impl BitAnd for BitMask {
+    type Output = Self;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self(self.val() & rhs.val())
     }
 }
