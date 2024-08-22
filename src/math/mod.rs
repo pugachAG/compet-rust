@@ -2,6 +2,7 @@ pub mod bitmask;
 pub mod combinations;
 pub mod combinatorics;
 pub mod divs;
+pub mod eratosthenes;
 pub mod euclid;
 pub mod modulo;
 pub mod modulo_ops;
