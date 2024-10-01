@@ -1,3 +1,4 @@
+pub mod bellman_ford;
 pub mod con_comps;
 pub mod cut_points;
 pub mod dijkstra;
