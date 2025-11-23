@@ -50,15 +50,59 @@ macro_rules! input {
 /// # Examples
 /// ```
 /// let (n, m) = (1, 2);
-/// let a = vec![1, 2, 3];
-/// let ans = false;
-/// let opt: Option<usize> = None;
 /// output! { io =>
 ///     n, m;
-///     sl(a);
-///     yn(ans);
-///     or1(opt);
 /// }
+/// /*
+/// 1 2
+/// */
+///
+/// let a = vec![1, 2, 3];
+/// let b = vec![4, 5];
+/// output! { io =>
+///     sl a;
+///     nl b;
+/// }
+/// /*
+/// 1 2 3
+/// 4
+/// 5
+/// */
+///
+/// let pos = true;
+/// let neg = false;
+/// output! { io =>
+///     yn pos;
+///     yn neg;
+///     YN pos;
+///     YN neg;
+/// }
+/// /*
+/// yes
+/// no
+/// YES
+/// NO
+/// */
+///
+/// let some_ans = Some(42);
+/// let no_ans: Option<i32> = None;
+/// output! { io =>
+///     or1 some_ans;
+///     or1 no_ans;
+/// }
+/// /*
+/// 42
+/// -1
+/// */
+///
+/// let grid = vec![vec![1, 2], vec![3, 4]];
+/// output! { io =>
+///     grd grid;
+/// }
+/// /*
+/// 1 2
+/// 3 4
+/// */
 /// ```
 #[macro_export]
 macro_rules! output {
@@ -86,6 +130,17 @@ macro_rules! output {
     };
     ($io:ident => nl $val:tt $($tail:tt)*) => {
         $io.printer.print_vec(&$val, '\n');
+        $crate::output!{ $io => $($tail)* }
+    };
+    ($io:ident => grd $val:tt $($tail:tt)*) => {
+        let mut is_first = true;
+        for row in &$val {
+            if !is_first {
+                $io.printer.print(&'\n');
+            }
+            is_first = false;
+            $io.printer.print_vec(row, ' ');
+        }
         $crate::output!{ $io => $($tail)* }
     };
     ($io:ident => yn $val:tt $($tail:tt)*) => {
@@ -176,7 +231,7 @@ impl OutputPrinter {
             .unwrap();
     }
 
-    pub fn print_vec<T: ToString>(&mut self, a: &Vec<T>, sep: char) {
+    pub fn print_vec<T: ToString>(&mut self, a: &[T], sep: char) {
         let mut is_first = true;
         for item in a {
             if !is_first {
