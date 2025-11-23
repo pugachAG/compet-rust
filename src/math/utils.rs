@@ -1,4 +1,5 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::hash::Hash;
 use std::iter::FromIterator;
 use std::ops::{AddAssign, RangeBounds, Sub};
 
@@ -10,6 +11,18 @@ pub fn div_up<T: Integer>(v: T, d: T) -> T {
     (v + d - T::from(1)) / d
 }
 
+pub fn num_dig<T: Integer>(v: T) -> usize {
+    let d = T::from(10);
+    let zero = T::from(0);
+    let mut ret = 1;
+    let mut r = v / d;
+    while r > zero {
+        r /= d;
+        ret += 1;
+    }
+    ret
+}
+
 pub fn permutation_index(a: &[usize]) -> Vec<usize> {
     let n = a.len();
     let mut ans = vec![n; n];
@@ -18,6 +31,14 @@ pub fn permutation_index(a: &[usize]) -> Vec<usize> {
         ans[v] = i;
     }
     ans
+}
+
+pub fn first_index_map<T: Eq + Hash + Clone>(a: &[T]) -> HashMap<T, usize> {
+    let mut ret = HashMap::with_capacity(a.len());
+    for (i, v) in a.iter().enumerate() {
+        ret.entry(v.clone()).or_insert(i);
+    }
+    ret
 }
 
 pub fn coordinate_compress_map<T: Ord>(iter: impl Iterator<Item = T>) -> BTreeMap<T, usize> {
