@@ -23,6 +23,14 @@ impl Str {
         self.iter().filter(|&&c| c == ch).count()
     }
 
+    pub fn char_counts(&self) -> [usize; 256] {
+        let mut ret = [0; 256];
+        for &ch in self {
+            ret[ch as usize] += 1;
+        }
+        ret
+    }
+
     pub fn reversed(&self) -> Str {
         Str(self.0.reversed())
     }
