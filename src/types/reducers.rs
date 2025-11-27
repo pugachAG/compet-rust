@@ -35,3 +35,49 @@ impl<T> Reducer<T> {
         self.acc.as_ref()
     }
 }
+
+pub struct TopN<T, const N: usize> {
+    acc: [Option<T>; N],
+    f: fn(&T, &T) -> bool,
+}
+
+impl<T: PartialOrd, const N: usize> TopN<T, N> {
+    pub fn min() -> Self {
+        Self::new(|cur, upd| upd.lt(cur))
+    }
+
+    pub fn max() -> Self {
+        Self::new(|cur, upd| upd.gt(cur))
+    }
+}
+
+impl<T: PartialOrd, const N: usize> TopN<T, N> {
+    pub fn new(f: fn(&T, &T) -> bool) -> Self {
+        Self {
+            acc: std::array::from_fn(|_| None),
+            f,
+        }
+    }
+
+    pub fn update(&mut self, v: T) {
+        let mut cand = v;
+        for slot in &mut self.acc {
+            if let Some(cur) = slot {
+                if (self.f)(cur, &cand) {
+                    std::mem::swap(cur, &mut cand);
+                }
+            } else {
+                *slot = Some(cand);
+                break;
+            }
+        }
+    }
+
+    pub fn done(self) -> [Option<T>; N] {
+        self.acc
+    }
+
+    pub fn acc(&self) -> &[Option<T>; N] {
+        &self.acc
+    }
+}
