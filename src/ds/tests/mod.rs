@@ -2,3 +2,4 @@ mod bitset;
 mod lazy_seg_tree;
 mod seg_tree;
 mod seg_tree_values;
+mod suffix_automaton;
