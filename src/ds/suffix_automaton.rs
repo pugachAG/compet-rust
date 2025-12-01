@@ -1,70 +1,60 @@
 use std::{collections::HashMap, hash::Hash, marker::PhantomData};
 
-pub trait AlphabetMap<C, V>: Clone + Default {
-    fn get(&self, c: &C) -> Option<&V>;
-    fn insert(&mut self, k: C, v: V);
+type NodeIndex = usize;
+
+const NO_NODE_INDEX: NodeIndex = usize::MAX;
+
+pub trait AlphabetMap<C>: Clone + Default {
+    fn get(&self, c: &C) -> Option<NodeIndex>;
+    fn insert(&mut self, c: C, v: NodeIndex);
 }
 
 #[derive(Clone)]
-pub struct RangeMap<V, const O: u8, const L: usize>([Option<V>; L]);
+pub struct ByteRangeMap<const O: u8, const L: usize>([usize; L]);
 
-pub type LowerCaseMap<V> = RangeMap<V, b'a', 26>;
+pub type LowerCaseMap = ByteRangeMap<b'a', 26>;
 
-impl<V, const O: u8, const L: usize> Default for RangeMap<V, O, L> {
+impl<const O: u8, const L: usize> Default for ByteRangeMap<O, L> {
     fn default() -> Self {
-        Self(std::array::from_fn(|_| None))
+        Self([NO_NODE_INDEX; L])
     }
 }
 
-impl<V, const O: u8, const L: usize> RangeMap<V, O, L> {
-    pub fn get(&self, k: u8) -> Option<&V> {
-        let i = self.index(k);
-        self.0[i].as_ref()
+impl<const O: u8, const S: usize> AlphabetMap<u8> for ByteRangeMap<O, S> {
+    fn get(&self, c: &u8) -> Option<NodeIndex> {
+        let i = self.0[(c - O) as usize];
+        if i == NO_NODE_INDEX {
+            None
+        } else {
+            Some(i)
+        }
     }
 
-    pub fn insert(&mut self, k: u8, v: V) -> Option<V> {
-        let i = self.index(k);
-        std::mem::replace(&mut self.0[i], Some(v))
-    }
-
-    #[inline]
-    fn index(&self, k: u8) -> usize {
-        (k - O) as usize
-    }
-}
-
-impl<V: Clone, const O: u8, const S: usize> AlphabetMap<u8, V> for RangeMap<V, O, S> {
-    fn get(&self, c: &u8) -> Option<&V> {
-        self.get(*c)
-    }
-
-    fn insert(&mut self, k: u8, v: V) {
-        self.insert(k, v);
+    fn insert(&mut self, c: u8, v: NodeIndex) {
+        self.0[(c - O) as usize] = v;
     }
 }
 
 #[derive(Clone)]
-pub struct AlphabetHashMap<C, V>(HashMap<C, V>);
+pub struct AlphabetHashMap<C>(HashMap<C, NodeIndex>);
 
-impl<C, V> Default for AlphabetHashMap<C, V> {
+impl<C> Default for AlphabetHashMap<C> {
     fn default() -> Self {
         Self(Default::default())
     }
 }
 
-impl<C: Hash + Eq + Clone, V: Clone> AlphabetMap<C, V> for AlphabetHashMap<C, V> {
-    fn get(&self, c: &C) -> Option<&V> {
-        self.0.get(c)
+impl<C: Hash + Eq + Clone> AlphabetMap<C> for AlphabetHashMap<C> {
+    fn get(&self, c: &C) -> Option<NodeIndex> {
+        self.0.get(c).cloned()
     }
 
-    fn insert(&mut self, k: C, v: V) {
-        self.0.insert(k, v);
+    fn insert(&mut self, c: C, v: NodeIndex) {
+        self.0.insert(c, v);
     }
 }
 
-type NodeIndex = usize;
-
-struct Node<C, M: AlphabetMap<C, NodeIndex>> {
+struct Node<C, M: AlphabetMap<C>> {
     pub len: usize,
     pub link: Option<NodeIndex>,
     pub nxt: M,
@@ -72,15 +62,15 @@ struct Node<C, M: AlphabetMap<C, NodeIndex>> {
 }
 
 /// https://cp-algorithms.com/string/suffix-automaton.html
-pub struct SuffixAutomaton<C, M: AlphabetMap<C, NodeIndex>> {
+pub struct SuffixAutomaton<C, M: AlphabetMap<C>> {
     nodes: Vec<Node<C, M>>,
     last_i: NodeIndex,
 }
 
-pub type LowerCaseSuffixAutomaton = SuffixAutomaton<u8, LowerCaseMap<NodeIndex>>;
-pub type HashMapSuffixAutomaton<C> = SuffixAutomaton<C, AlphabetHashMap<C, NodeIndex>>;
+pub type LowerCaseSuffixAutomaton = SuffixAutomaton<u8, LowerCaseMap>;
+pub type HashMapSuffixAutomaton<C> = SuffixAutomaton<C, AlphabetHashMap<C>>;
 
-impl<C: Copy, M: AlphabetMap<C, NodeIndex>> SuffixAutomaton<C, M> {
+impl<C: Copy, M: AlphabetMap<C>> SuffixAutomaton<C, M> {
     pub fn new() -> Self {
         let root = Node {
             len: 0,
@@ -112,7 +102,7 @@ impl<C: Copy, M: AlphabetMap<C, NodeIndex>> SuffixAutomaton<C, M> {
         let mut p_i = last_i;
         let q_i = loop {
             let p = &mut self.nodes[p_i];
-            if let Some(&q_i) = p.nxt.get(&c) {
+            if let Some(q_i) = p.nxt.get(&c) {
                 break q_i;
             }
             p.nxt.insert(c, cur_i);
@@ -130,7 +120,7 @@ impl<C: Copy, M: AlphabetMap<C, NodeIndex>> SuffixAutomaton<C, M> {
         let clone_i = self.create_node(p.len + 1, q.link.unwrap(), q.nxt.clone());
         loop {
             let p = &mut self.nodes[p_i];
-            if p.nxt.get(&c) == Some(&q_i) {
+            if p.nxt.get(&c) == Some(q_i) {
                 p.nxt.insert(c, clone_i);
             } else {
                 break;
@@ -148,7 +138,7 @@ impl<C: Copy, M: AlphabetMap<C, NodeIndex>> SuffixAutomaton<C, M> {
     fn find(&self, seq: impl Iterator<Item = C>) -> Option<&Node<C, M>> {
         let mut cur_i = 0;
         for c in seq {
-            if let Some(&node_i) = self.nodes[cur_i].nxt.get(&c) {
+            if let Some(node_i) = self.nodes[cur_i].nxt.get(&c) {
                 cur_i = node_i;
             } else {
                 return None;
