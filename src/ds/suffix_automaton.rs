@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash, marker::PhantomData};
 
-type NodeIndex = usize;
+pub type NodeIndex = usize;
 
 const NO_NODE_INDEX: NodeIndex = usize::MAX;
 
@@ -13,6 +13,18 @@ pub trait AlphabetMap<C>: Clone + Default {
 pub struct ByteRangeMap<const O: u8, const L: usize>([usize; L]);
 
 pub type LowerCaseMap = ByteRangeMap<b'a', 26>;
+
+impl<const O: u8, const L: usize> ByteRangeMap<O, L> {
+    pub fn nxt(&self) -> impl Iterator<Item = (u8, NodeIndex)> + '_ {
+        self.0.iter().enumerate().filter_map(|(i, &node_i)| {
+            if node_i == NO_NODE_INDEX {
+                None
+            } else {
+                Some((i as u8 + O, node_i))
+            }
+        })
+    }
+}
 
 impl<const O: u8, const L: usize> Default for ByteRangeMap<O, L> {
     fn default() -> Self {
@@ -54,7 +66,7 @@ impl<C: Hash + Eq + Clone> AlphabetMap<C> for AlphabetHashMap<C> {
     }
 }
 
-struct Node<C, M: AlphabetMap<C>> {
+pub struct Node<C, M: AlphabetMap<C>> {
     pub len: usize,
     pub link: Option<NodeIndex>,
     pub nxt: M,
@@ -71,6 +83,8 @@ pub type LowerCaseSuffixAutomaton = SuffixAutomaton<u8, LowerCaseMap>;
 pub type HashMapSuffixAutomaton<C> = SuffixAutomaton<C, AlphabetHashMap<C>>;
 
 impl<C: Copy, M: AlphabetMap<C>> SuffixAutomaton<C, M> {
+    pub const ROOT_NODE_I: NodeIndex = 0;
+
     pub fn new() -> Self {
         let root = Node {
             len: 0,
@@ -80,7 +94,7 @@ impl<C: Copy, M: AlphabetMap<C>> SuffixAutomaton<C, M> {
         };
         Self {
             nodes: vec![root],
-            last_i: 0,
+            last_i: Self::ROOT_NODE_I,
         }
     }
 
@@ -135,8 +149,12 @@ impl<C: Copy, M: AlphabetMap<C>> SuffixAutomaton<C, M> {
         self.nodes[q_i].link = Some(clone_i);
     }
 
+    pub fn node(&self, node_i: NodeIndex) -> &Node<C, M> {
+        &self.nodes[node_i]
+    }
+
     fn find(&self, seq: impl Iterator<Item = C>) -> Option<&Node<C, M>> {
-        let mut cur_i = 0;
+        let mut cur_i = Self::ROOT_NODE_I;
         for c in seq {
             if let Some(node_i) = self.nodes[cur_i].nxt.get(&c) {
                 cur_i = node_i;
